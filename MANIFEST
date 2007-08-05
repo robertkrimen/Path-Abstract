@@ -9,3 +9,4 @@ t/boilerplate.t
 t/pod-coverage.t
 t/pod.t
 Makefile.PL
+t/01-Path-Abstract.t

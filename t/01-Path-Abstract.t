@@ -5,7 +5,7 @@ use warnings;
 
 use Test::More (0 ? (tests => 1) : 'no_plan');
 use Test::Lazy qw/template try/;
-use Scalar::Util qw(refaddr);
+use Scalar::Util qw/refaddr/;
 
 use Path::Abstract qw/path/;
 
@@ -13,10 +13,6 @@ use vars qw/$c $d/;
 sub get { return path(@_)->path }
 my $path = path;
 $path = new Path::Abstract;
-
-warn path('a/b')->child('');
-
-exit;
 
 my $template = template(\<<_END_);
 Path::Abstract->new

@@ -2,6 +2,9 @@ TODO:
 - Integrate File::Spec-like UNIX tests
 - Add more Path::Class convenience methods (mkpath, contains, subsumes, etc.)
 
+0.071 Saturday August 04 20:03:41 PDT 2007:
+- Include "t/01-Path-Abstract.t" in MANIFEST
+
 0.07 Monday July 30 11:23:26 PDT 2007:
 - Discard empty ('') positions in the path before joining with a slash
 

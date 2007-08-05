@@ -1,4 +1,4 @@
-.PHONY: all test time clean distclean dist build distcheck upload
+.PHONY: all test time clean distclean dist build distcheck upload distupload
 
 all: test
 
@@ -22,5 +22,5 @@ upload: distclean
 	ncftpput pause.perl.org incoming `basename $(PWD)`-?.??.tar.gz
 
 distcheck:
-	@./Build $@
-	@./Build $@ 2>&1 | grep "Not in" | awk '{ print $$4 }' | grep -Ev "(Session.vim|GNUmakefile|^\.)"
+	-@./Build $@
+	-@./Build $@ 2>&1 | grep "Not in" | awk '{ print $$4 }' | grep -Ev "(Session.vim|GNUmakefile|^\.)"

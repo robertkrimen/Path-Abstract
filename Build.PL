@@ -14,7 +14,7 @@ my $builder = Module::Build->new(
     },
     requires => {
     	'Scalar::Util' => 0,
-	'Sub::Exporter' => 0,
+        'Sub::Exporter' => 0,
     	'Carp' => 0,
     },
     optional => {
