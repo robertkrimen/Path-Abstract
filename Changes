@@ -1,6 +1,8 @@
 TODO:
 - Integrate File::Spec-like UNIX tests
 - Add more Path::Class convenience methods (mkpath, contains, subsumes, etc.)
+- Make ->list more like Path::Class::Dir::list
+- Document differences between Path::Abstract and Path::Class
 
 0.071 Saturday August 04 20:03:41 PDT 2007:
 - Include "t/01-Path-Abstract.t" in MANIFEST
