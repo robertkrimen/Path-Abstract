@@ -40,6 +40,8 @@ use overload
 	fallback => 1,
 ;
 
+=head1 METHODS
+
 =over 4
 
 =cut
