@@ -97,7 +97,7 @@ sub clone {
 
 sub _canonize(@) {
 	no warnings 'uninitialized';
-    @_ = map { my $part = blessed $_ && $_->isa("Path::Abstract::Fast") ? $_->get : $_ ; length $part ? $part : () } @_;
+    @_ = map { my $part = blessed $_ && $_->isa("Path::Abstract::Fast") ? $$_ : $_ ; length $part ? $part : () } @_;
 	my $leading = $_[0] && substr($_[0], 0, 1) eq '/';
 	my $path = join '/', @_;
 	my $trailing = $path && substr($path, -1) eq '/';

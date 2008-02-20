@@ -19,6 +19,8 @@ provides:
   Path::Abstract:
     file: lib/Path/Abstract.pm
     version: 0.080
+  Path::Abstract::Fast:
+    file: lib/Path/Abstract/Fast.pm
 generated_by: Module::Build version 0.2806
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
