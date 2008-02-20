@@ -4,6 +4,10 @@ TODO:
 - Make ->list more like Path::Class::Dir::list
 - Document differences between Path::Abstract and Path::Class
 
+0.080 Tuesday February 19 22:20:32 PST 2008:
+- Added Path::Abstract::Fast without "use overload ..." to enable a hefty speedup! 
+  Credit to Joshua ben Jore, Max Kanat-Alexander, and Scott McWhirter for the discovery
+
 0.071 Saturday August 04 20:03:41 PDT 2007:
 - Include "t/01-Path-Abstract.t" in MANIFEST
 

@@ -14,6 +14,11 @@ sub get { return path(@_)->path }
 my $path = path;
 $path = new Path::Abstract;
 
+my $red = Path::Abstract::Fast->new("red");
+my $blue = Path::Abstract::Fast->new("blue");
+$path = Path::Abstract->new($red, $blue);
+is($path, "red/blue");
+
 my $template = template(\<<_END_);
 Path::Abstract->new
 Path::Abstract->new( qw!/! )
