@@ -1,9 +1,9 @@
 ---
 name: Path-Abstract
-version: 0.071
+version: 0.080
 author:
   - 'Robert Krimen <rkrimen@cpan.org>'
-abstract: A fast and featureful class for UNIX-style path manipulation.
+abstract: A fast and featureful class for UNIX-style path manipulation
 license: perl
 resources:
   license: http://dev.perl.org/licenses/
@@ -18,8 +18,8 @@ build_requires:
 provides:
   Path::Abstract:
     file: lib/Path/Abstract.pm
-    version: 0.071
-generated_by: Module::Build version 0.2808
+    version: 0.080
+generated_by: Module::Build version 0.2806
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
   version: 1.2
