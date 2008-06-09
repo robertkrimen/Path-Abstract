@@ -9,7 +9,7 @@ Path::Abstract - A fast and featureful class for UNIX-style path manipulation
 
 =head1 VERSION
 
-Version 0.080
+Version 0.081
 
 =head1 SYNOPSIS
 
@@ -25,7 +25,7 @@ Version 0.080
 
 =cut
 
-our $VERSION = '0.080';
+our $VERSION = '0.081';
 
 use Sub::Exporter -setup => {
 	exports => [ path => sub { sub {

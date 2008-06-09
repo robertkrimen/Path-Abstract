@@ -1,26 +1,23 @@
-.PHONY: all test time clean distclean dist build distcheck upload distupload
+.PHONY: all test time clean distclean dist distcheck upload distupload
 
 all: test
 
-build: Build
-	./$<
+dist:
+	rm -rf inc META.y*ml
+	perl Makefile.PL
+	$(MAKE) -f Makefile dist
 
-dist distclean test tardist: Build
-	./Build $@
+distclean tardist: Makefile
+	$(MAKE) -f $< $@
 
-Build: Build.PL
+test: Makefile
+	TEST_RELEASE=1 $(MAKE) -f $< $@
+
+Makefile: Makefile.PL
 	perl $<
 
 clean: distclean
 
-time:
-	perl -mlib=$(DVL_HOME)/lib -T -d:DProf ./profile-Path-Abstract.pl 5000 && dprofpp tmon.out
-	perl -mlib=$(DVL_HOME)/lib -T -d:DProf ./profile-Path-Class.pl 5000 && dprofpp tmon.out
-
-upload: distclean 
-	perl Build.PL && ./Build dist
-	ncftpput pause.perl.org incoming `basename $(PWD)`-?.??.tar.gz
-
-distcheck:
-	-@./Build $@
-	-@./Build $@ 2>&1 | grep "Not in" | awk '{ print $$4 }' | grep -Ev "(Session.vim|GNUmakefile|^\.)"
+reset: clean
+	perl Makefile.PL
+	$(MAKE) test
