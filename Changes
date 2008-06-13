@@ -4,8 +4,11 @@ TODO:
     - Make ->list more like Path::Class::Dir::list
     - Document differences between Path::Abstract and Path::Class
 
+0.083 Monday June 09 11:11:39 PDT 2008:
+    - Update to Path::Abstract::Fast::_canonize to ensure correctness
+
 0.081 Sunday June 08 18:27:36 PDT 2008:
-    - Improvement in Path::Abstract::_canonize: halved execution speed (I hope :)
+    - Improvement in Path::Abstract::Fast::_canonize: halved execution speed (I hope :)
       by taking out blessed && ->isa
     - Switch to using Module::Install
 

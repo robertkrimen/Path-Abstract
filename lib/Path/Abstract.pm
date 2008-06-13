@@ -5,11 +5,11 @@ use strict;
 
 =head1 NAME
 
-Path::Abstract - A fast and featureful class for UNIX-style path manipulation
+Path::Abstract - Fast and featureful UNIX-style path manipulation
 
 =head1 VERSION
 
-Version 0.081
+Version 0.083
 
 =head1 SYNOPSIS
 
@@ -25,7 +25,7 @@ Version 0.081
 
 =cut
 
-our $VERSION = '0.081';
+our $VERSION = '0.083';
 
 use Sub::Exporter -setup => {
 	exports => [ path => sub { sub {
@@ -42,147 +42,143 @@ use base qw/Path::Abstract::Fast/;
 
 =head1 METHODS
 
-=over 4
+=head2 Path::Abstract->new( <path> )
 
-=item Path::Abstract->new( <path> )
-
-=item Path::Abstract->new( <part>, [ <part>, ..., <part> ] )
+=head2 Path::Abstract->new( <part>, [ <part>, ..., <part> ] )
 
 Create a new C<Path::Abstract> object using <path> or by joining each <part> with "/"
 
 Returns the new C<Path::Abstract> object
 
-=item Path::Abstract::path( <path> )
+=head2 Path::Abstract::path( <path> )
 
-=item Path::Abstract::path( <part>, [ <part>, ..., <part> ] )
+=head2 Path::Abstract::path( <part>, [ <part>, ..., <part> ] )
 
 Create a new C<Path::Abstract> object using <path> or by joining each <part> with "/"
 
 Returns the new C<Path::Abstract> object
 
-=item $path->clone
+=head2 $path->clone
 
 Returns an exact copy of $path
 
-=item $path->set( <path> )
+=head2 $path->set( <path> )
 
-=item $path->set( <part>, [ <part>, ..., <part> ] )
+=head2 $path->set( <part>, [ <part>, ..., <part> ] )
 
 Set the path of $path to <path> or the concatenation of each <part> (separated by "/")
 
 Returns $path
 
-=item $path->is_nil
+=head2 $path->is_nil
 
-=item $path->is_empty
+=head2 $path->is_empty
 
 Returns true if $path is equal to ""
 
-=item $path->is_root
+=head2 $path->is_root
 
 Returns true if $path is equal to "/"
 
-=item $path->is_tree
+=head2 $path->is_tree
 
 Returns true if $path begins with "/"
 
 	path("/a/b")->is_tree # Returns true
 	path("c/d")->is_tree # Returns false
 
-=item $path->is_branch
+=head2 $path->is_branch
 
 Returns true if $path does NOT begin with a "/"
 
 	path("c/d")->is_branch # Returns true
 	path("/a/b")->is_branch # Returns false
 
-=item $path->to_tree
+=head2 $path->to_tree
 
 Change $path by prefixing a "/" if it doesn't have one already
 
 Returns $path
 
-=item $path->to_branch
+=head2 $path->to_branch
 
 Change $path by removing a leading "/" if it has one
 
 Returns $path
 
-=item $path->list
+=head2 $path->list
 
-=item $path->split
+=head2 $path->split
 
 Returns the path in list form by splitting at each "/"
 
 	path("c/d")->list # Returns ("c", "d")
 	path("/a/b/")->last # Returns ("a", "b")
 
-=item $path->first
+=head2 $path->first
 
 Returns the first part of $path up to the first "/" (but not including the leading slash, if any)
 
 	path("c/d")->first # Returns "c"
 	path("/a/b")->first # Returns "a"
 
-=item $path->last
+=head2 $path->last
 
 Returns the last part of $path up to the last "/"
 
 	path("c/d")->last # Returns "d"
 	path("/a/b/")->last # Returns "b"
 
-=item path
+=head2 path
 
-=item $path->get
+=head2 $path->get
 
-=item $path->stringify
+=head2 $path->stringify
 
 Returns the path in string or scalar form
 
 	path("c/d")->list # Returns "c/d"
 	path("/a/b/")->last # Returns "/a/b"
 
-=item $path->push( <part>, [ <part>, ..., <part> ] )
+=head2 $path->push( <part>, [ <part>, ..., <part> ] )
 
-=item $path->down( <part>, [ <part>, ..., <part> ] )
+=head2 $path->down( <part>, [ <part>, ..., <part> ] )
 
 Modify $path by appending each <part> to the end of \$path, separated by "/"
 
 Returns $path
 
-=item $path->child( <part>, [ <part>, ..., <part> ] )
+=head2 $path->child( <part>, [ <part>, ..., <part> ] )
 
 Make a copy of $path and push each <part> to the end of the new path.
 
 Returns the new child path
 
-=item $path->pop( <count> )
+=head2 $path->pop( <count> )
 
 Modify $path by removing <count> parts from the end of $path
 
 Returns the removed path as a C<Path::Abstract> object
 
-=item $path->up( <count> )
+=head2 $path->up( <count> )
 
 Modify $path by removing <count> parts from the end of $path
 
 Returns $path
 
-=item $path->parent( <count> )
+=head2 $path->parent( <count> )
 
 Make a copy of $path and pop <count> parts from the end of the new path
 
 Returns the new parent path
 
-=item $path->file
+=head2 $path->file
 
-=item $path->file( <part>, [ <part>, ..., <part> ] )
+=head2 $path->file( <part>, [ <part>, ..., <part> ] )
 
 Create a new C<Path::Class::File> object using $path as a base, and optionally extending it by each <part>
 
 Returns the new file object
-
-=back 
 
 =head1 NOTES
 

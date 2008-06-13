@@ -52,13 +52,11 @@ Thanks to JJORE, MKANAT, and KONOBI for discovering this
 
 =head1 METHODS
 
-=over 4
-
 =cut
 
-=item Path::Abstract::Fast->new( <path> )
+=head2 Path::Abstract::Fast->new( <path> )
 
-=item Path::Abstract::Fast->new( <part>, [ <part>, ..., <part> ] )
+=head2 Path::Abstract::Fast->new( <part>, [ <part>, ..., <part> ] )
 
 Create a new C<Path::Abstract::Fast> object using <path> or by joining each <part> with "/"
 
@@ -73,9 +71,9 @@ sub new {
 	return $self;
 }
 
-=item Path::Abstract::Fast::path( <path> )
+=head2 Path::Abstract::Fast::path( <path> )
 
-=item Path::Abstract::Fast::path( <part>, [ <part>, ..., <part> ] )
+=head2 Path::Abstract::Fast::path( <part>, [ <part>, ..., <part> ] )
 
 Create a new C<Path::Abstract::Fast> object using <path> or by joining each <part> with "/"
 
@@ -83,7 +81,7 @@ Returns the new C<Path::Abstract::Fast> object
 
 =cut
 
-=item $path->clone
+=head2 $path->clone
 
 Returns an exact copy of $path
 
@@ -97,10 +95,13 @@ sub clone {
 
 sub _canonize(@) {
 	no warnings 'uninitialized';
-    @_ = map { $_ = ref eq "Path::Abstract::Fast" ? $$_ : $_; length() ? $_ : () } @_;
+    @_ = map {
+        $_ = ref && (ref eq "Path::Abstract::Fast" || blessed $_ && $_->isa("Path::Abstract::Fast")) ? $$_ : $_;
+        length() ? $_ : ();
+    } @_;
 	my $leading = $_[0] && substr($_[0], 0, 1) eq '/';
 	my $path = join '/', @_;
-	my $trailing = $path && substr($path, -1) eq '/';
+    my $trailing = $path && substr($path, -1) eq '/';
 
 	# From File::Spec::Unix::canonpath
 	$path =~ s|/{2,}|/|g;				# xx////xx  -> xx/xx
@@ -115,9 +116,9 @@ sub _canonize(@) {
 	return $path;
 }
 
-=item $path->set( <path> )
+=head2 $path->set( <path> )
 
-=item $path->set( <part>, [ <part>, ..., <part> ] )
+=head2 $path->set( <part>, [ <part>, ..., <part> ] )
 
 Set the path of $path to <path> or the concatenation of each <part> (separated by "/")
 
@@ -131,9 +132,9 @@ sub set {
 	return $self;
 }
 
-=item $path->is_nil
+=head2 $path->is_nil
 
-=item $path->is_empty
+=head2 $path->is_empty
 
 Returns true if $path is equal to ""
 
@@ -145,7 +146,7 @@ sub is_empty {
 }
 for (qw(is_nil)) { no strict 'refs'; *$_ = \&is_empty }
 
-=item $path->is_root
+=head2 $path->is_root
 
 Returns true if $path is equal to "/"
 
@@ -156,7 +157,7 @@ sub is_root {
 	return $$self eq "/";
 }
 
-=item $path->is_tree
+=head2 $path->is_tree
 
 Returns true if $path begins with "/"
 
@@ -170,7 +171,7 @@ sub is_tree {
 	return substr($$self, 0, 1) eq "/";
 }
 
-=item $path->is_branch
+=head2 $path->is_branch
 
 Returns true if $path does NOT begin with a "/"
 
@@ -184,7 +185,7 @@ sub is_branch {
 	return $$self && substr($$self, 0, 1) ne "/";
 }
 
-=item $path->to_tree
+=head2 $path->to_tree
 
 Change $path by prefixing a "/" if it doesn't have one already
 
@@ -198,7 +199,7 @@ sub to_tree {
 	return $self;
 }
 
-=item $path->to_branch
+=head2 $path->to_branch
 
 Change $path by removing a leading "/" if it has one
 
@@ -212,9 +213,9 @@ sub to_branch {
 	return $self;
 }
 
-=item $path->list
+=head2 $path->list
 
-=item $path->split
+=head2 $path->split
 
 Returns the path in list form by splitting at each "/"
 
@@ -231,7 +232,7 @@ sub list {
 }
 for (qw(split)) { no strict 'refs'; *$_ = \&list }
 
-=item $path->first
+=head2 $path->first
 
 Returns the first part of $path up to the first "/" (but not including the leading slash, if any)
 
@@ -247,7 +248,7 @@ sub first {
 	return shift @path;
 }
 
-=item $path->last
+=head2 $path->last
 
 Returns the last part of $path up to the last "/"
 
@@ -263,11 +264,11 @@ sub last {
 	return pop @path;
 }
 
-=item path
+=head2 path
 
-=item $path->get
+=head2 $path->get
 
-=item $path->stringify
+=head2 $path->stringify
 
 Returns the path in string or scalar form
 
@@ -282,9 +283,9 @@ sub get {
 }
 for (qw(path stringify)) { no strict 'refs'; *$_ = \&get }
 
-=item $path->push( <part>, [ <part>, ..., <part> ] )
+=head2 $path->push( <part>, [ <part>, ..., <part> ] )
 
-=item $path->down( <part>, [ <part>, ..., <part> ] )
+=head2 $path->down( <part>, [ <part>, ..., <part> ] )
 
 Modify $path by appending each <part> to the end of \$path, separated by "/"
 
@@ -299,7 +300,7 @@ sub push {
 }
 for (qw(down)) { no strict 'refs'; *$_ = \&push }
 
-=item $path->child( <part>, [ <part>, ..., <part> ] )
+=head2 $path->child( <part>, [ <part>, ..., <part> ] )
 
 Make a copy of $path and push each <part> to the end of the new path.
 
@@ -313,7 +314,7 @@ sub child {
 	return $child->push(@_);
 }
 
-=item $path->pop( <count> )
+=head2 $path->pop( <count> )
 
 Modify $path by removing <count> parts from the end of $path
 
@@ -344,7 +345,7 @@ sub pop {
 	return (ref $self)->new(join '/', @popped);
 }
 
-=item $path->up( <count> )
+=head2 $path->up( <count> )
 
 Modify $path by removing <count> parts from the end of $path
 
@@ -371,7 +372,7 @@ sub up {
 	return $self;
 }
 
-=item $path->parent( <count> )
+=head2 $path->parent( <count> )
 
 Make a copy of $path and pop <count> parts from the end of the new path
 
@@ -385,9 +386,9 @@ sub parent {
 	return $parent->up(1, @_);
 }
 
-=item $path->file
+=head2 $path->file
 
-=item $path->file( <part>, [ <part>, ..., <part> ] )
+=head2 $path->file( <part>, [ <part>, ..., <part> ] )
 
 Create a new C<Path::Class::File> object using $path as a base, and optionally extending it by each <part>
 
@@ -395,9 +396,9 @@ Returns the new file object
 
 =cut
 
-=item $path->dir
+=head2 $path->dir
 
-=item $path->dir( <part>, [ <part>, ..., <part> ] )
+=head2 $path->dir( <part>, [ <part>, ..., <part> ] )
 
 Create a new C<Path::Class::Dir> object using $path as a base, and optionally extending it by each <part>
 
