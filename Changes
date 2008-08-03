@@ -4,6 +4,10 @@ TODO:
     - Make ->list more like Path::Class::Dir::list
     - Document differences between Path::Abstract and Path::Class
 
+0.085 Sunday August 03 14:03:21 PDT 2008:
+    - Added Path::Abstract::URI
+    - Some documentation tweaks
+
 0.083 Monday June 09 11:11:39 PDT 2008:
     - Update to Path::Abstract::Fast::_canonize to ensure correctness
 
