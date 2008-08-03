@@ -34,3 +34,15 @@ is($uri, "http://example.com/apple/?a=b");
 
 $uri->query("c=d&e=f");
 is($uri, "http://example.com/apple/?c=d&e=f");
+
+$uri->path("grape/blueberry/pineapple");
+is($uri, "http://example.com/grape/blueberry/pineapple?c=d&e=f");
+
+$uri = Path::Abstract::URI->new("http://example.com/cherry?a=b", path => "grape/lemon");
+is($uri, "http://example.com/grape/lemon?a=b");
+
+$uri = Path::Abstract::URI->new("http://example.com/cherry?a=b", child => "grape/lemon");
+is($uri, "http://example.com/cherry/grape/lemon?a=b");
+
+$uri = Path::Abstract::URI->new(uri => "http://example.com/cherry?a=b", child => "grape/lemon");
+is($uri, "http://example.com/cherry/grape/lemon?a=b");
