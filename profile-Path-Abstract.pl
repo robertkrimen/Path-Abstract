@@ -7,6 +7,8 @@ use Path::Abstract::Fast;
 
 use constant class => 1 ? qw/Path::Abstract/ : qw/Path::Abstract::Fast/;
 
+warn "Using ", class;
+
 srand 30;
 
 my $count = shift @ARGV || 10000;
