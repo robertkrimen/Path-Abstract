@@ -147,6 +147,24 @@ See L<Path::Abstract> for more information
 
 =head2 $uri->is_branch
 
+=head1 SEE ALSO
+
+L<Path::Abstract>
+
+L<Path::Resource>
+
+=head1 AUTHOR
+
+Robert Krimen, C<< <rkrimen at cpan.org> >>
+
+=head1 SOURCE
+
+You can contribute or fork this project via GitHub:
+
+L<http://github.com/robertkrimen/path-abstract/tree/master>
+
+    git clone git://github.com/robertkrimen/path-abstract.git Path-Abstract
+
 =cut
 
 1;

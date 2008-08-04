@@ -4,7 +4,7 @@ TODO:
     - Make ->list more like Path::Class::Dir::list
     - Document differences between Path::Abstract and Path::Class
 
-0.086 Sunday August 03 21:56:01 PDT 2008:
+0.087 Sunday August 03 21:56:01 PDT 2008:
     - Added URI::PathAbstract as a facade for Path::Abstract::URI (namespace is more relevant)
     - Some documentation fixes
 
