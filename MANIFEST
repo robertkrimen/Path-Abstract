@@ -4,7 +4,6 @@ META.yml # Will be created by "make dist"
 README
 lib/Path/Abstract.pm
 lib/Path/Abstract/Fast.pm
-lib/Path/Abstract/URI.pm
 lib/URI/PathAbstract.pm
 Makefile.PL
 inc/Module/AutoInstall.pm
