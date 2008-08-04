@@ -9,7 +9,7 @@ Path::Abstract - Fast and featureful UNIX-style path manipulation
 
 =head1 VERSION
 
-Version 0.085
+Version 0.086
 
 =head1 SYNOPSIS
 
@@ -25,7 +25,7 @@ Version 0.085
 
 =cut
 
-our $VERSION = '0.085';
+our $VERSION = '0.086';
 
 use Sub::Exporter -setup => {
 	exports => [ path => sub { sub {
@@ -129,16 +129,13 @@ Returns the last part of $path up to the last "/"
 	path("c/d")->last # Returns "d"
 	path("/a/b/")->last # Returns "b"
 
-=head2 path
-
 =head2 $path->get
 
 =head2 $path->stringify
 
 Returns the path in string or scalar form
 
-	path("c/d")->list # Returns "c/d"
-	path("/a/b/")->last # Returns "/a/b"
+	path("c/d")->get # Returns "c/d"
 
 =head2 $path->push( <part>, [ <part>, ..., <part> ] )
 
@@ -172,6 +169,14 @@ Make a copy of $path and pop <count> parts from the end of the new path
 
 Returns the new parent path
 
+=head2 $path->dir
+
+=head2 $path->dir( <part>, [ <part>, ..., <part> ] )
+
+Create a new C<Path::Class::Dir> object using $path as a base, and optionally extending it by each <part>
+
+Returns the new dir object
+
 =head2 $path->file
 
 =head2 $path->file( <part>, [ <part>, ..., <part> ] )
@@ -180,13 +185,25 @@ Create a new C<Path::Class::File> object using $path as a base, and optionally e
 
 Returns the new file object
 
-=head1 NOTES
+=head1 SEE ALSO
 
-The module formerly known as Path::Lite
+L<Path::Class>
+
+L<File::Spec>
+
+L<Path::Resource>
 
 =head1 AUTHOR
 
 Robert Krimen, C<< <rkrimen at cpan.org> >>
+
+=head1 SOURCE
+
+You can contribute or fork this project via GitHub:
+
+L<http://github.com/robertkrimen/path-abstract/tree/master>
+
+    git clone git://github.com/robertkrimen/path-abstract.git Path-Abstract
 
 =head1 BUGS
 

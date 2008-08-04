@@ -1,8 +1,12 @@
 TODO:
     - Integrate File::Spec-like UNIX tests
-    - Add more Path::Class convenience methods (mkpath, contains, subsumes, etc.)
+    - Add more Path::Class-style convenience methods (mkpath, contains, subsumes, etc.)
     - Make ->list more like Path::Class::Dir::list
     - Document differences between Path::Abstract and Path::Class
+
+0.086 Sunday August 03 21:56:01 PDT 2008:
+    - Added URI::PathAbstract as a facade for Path::Abstract::URI (namespace is more relevant)
+    - Some documentation fixes
 
 0.085 Sunday August 03 14:03:21 PDT 2008:
     - Added Path::Abstract::URI

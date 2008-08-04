@@ -29,7 +29,7 @@ Unfortunately, this is not true:
 
     Path::Abstract::URI->new( http://example.com )->isa( URI )
 
-Path::Abstract:URI supports the L<URI> generic and common methods
+Path::Abstract::URI supports the L<URI> generic and common methods
 
 =cut
 
@@ -142,7 +142,7 @@ sub clone {
 
 {
 
-=head2 URI delegated
+=head2 * URI *
 
 See L<URI> for more information
 
@@ -249,7 +249,7 @@ _END_
         }
     }
 
-=head2 Path::Abstract delegated
+=head2 * Path::Abstract *
 
 See L<Path::Abstract> for more information
 
