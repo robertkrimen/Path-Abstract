@@ -415,8 +415,8 @@ BEGIN {
 		*dir = *file = sub { croak "Path::Class is not available" };
 	}
 	else {
-		*file = sub { return Path::Class::file($_[0]->get, @_) };
-		*dir = sub { return Path::Class::dir($_[0]->get, @_) };
+		*file = sub { return Path::Class::file(shift->get, @_) };
+		*dir = sub { return Path::Class::dir(shift->get, @_) };
 	}
 }
 
