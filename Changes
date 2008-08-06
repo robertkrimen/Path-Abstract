@@ -4,6 +4,9 @@ TODO:
     - Make ->list more like Path::Class::Dir::list
     - Document differences between Path::Abstract and Path::Class
 
+0.089 Wednesday August 06 02:02:30 PDT 2008:
+    - Moved U::PA into it's own distribution
+
 0.088 Monday August 04 10:40:55 PDT 2008:
     - Removed Path::Abstract::URI (made U::PA the real deal)
     - Check for URI presence when testing
