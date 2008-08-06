@@ -31,4 +31,3 @@ like($path, qr{^apple/cherry/grape/SomeRandomPackage=HASH\(0x});
 
 $path = $path->child([]);
 like($path, qr{^apple/cherry/grape/SomeRandomPackage=HASH\(0x});
-like($path, qr{ARRAY\(0x});

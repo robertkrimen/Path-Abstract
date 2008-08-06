@@ -98,6 +98,8 @@ sub _canonize(@) {
     @_ = map {
         $_ = ref && (ref eq "Path::Abstract::Fast" || blessed $_ && $_->isa("Path::Abstract::Fast")) ? $$_ : $_;
         length() ? $_ : ();
+    } map {
+        ref eq "ARRAY" ? @$_ : $_
     } @_;
 	my $leading = $_[0] && substr($_[0], 0, 1) eq '/';
 	my $path = join '/', @_;
