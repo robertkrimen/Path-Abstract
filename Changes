@@ -4,6 +4,9 @@ TODO:
     - Make ->list more like Path::Class::Dir::list
     - Document differences between Path::Abstract and Path::Class
 
+0.092 Thursday August 07 12:06:48 PDT 2008:
+    - More test silliness;  should be fixed now
+
 0.091 Wednesday August 06 19:14:47 PDT 2008:
     - Testing bug fix
 
