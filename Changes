@@ -4,6 +4,9 @@ TODO:
     - Make ->list more like Path::Class::Dir::list
     - Document differences between Path::Abstract and Path::Class
 
+0.091 Wednesday August 06 19:14:47 PDT 2008:
+    - Testing bug fix
+
 0.090 Wednesday August 06 16:00:14 PDT 2008:
     - Fix for double file/double dir bug
 
