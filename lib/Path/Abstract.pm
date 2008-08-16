@@ -9,7 +9,7 @@ Path::Abstract - Fast and featureful UNIX-style path manipulation
 
 =head1 VERSION
 
-Version 0.092
+Version 0.093
 
 =head1 SYNOPSIS
 
@@ -25,7 +25,7 @@ Version 0.092
 
 =cut
 
-our $VERSION = '0.092';
+our $VERSION = '0.093';
 
 use Sub::Exporter -setup => {
 	exports => [ path => sub { sub {
@@ -38,7 +38,7 @@ use overload
 	fallback => 1,
 ;
 
-use base qw/Path::Abstract::Fast/;
+use base qw/Path::Abstract::Underload/;
 
 =head1 METHODS
 

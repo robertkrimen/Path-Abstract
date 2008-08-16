@@ -22,8 +22,8 @@ sub get { return path(@_)->path }
 my $path = path;
 $path = new Path::Abstract;
 
-my $red = Path::Abstract::Underload->new("red");
-my $blue = Path::Abstract::Underload->new("blue");
+my $red = Path::Abstract::Fast->new("red");
+my $blue = Path::Abstract::Fast->new("blue");
 $path = Path::Abstract->new($red, $blue);
 is($path, "red/blue");
 

@@ -4,6 +4,7 @@ META.yml # Will be created by "make dist"
 README
 lib/Path/Abstract.pm
 lib/Path/Abstract/Fast.pm
+lib/Path/Abstract/Underload.pm
 Makefile.PL
 inc/Module/AutoInstall.pm
 inc/Module/Install.pm
@@ -20,6 +21,7 @@ t/00-load.t
 t/01-basic.t
 t/02-robustness.t
 t/9000-bug-double-file-double-dir.t
+t/9001-deprecation.t
 t/release/boilerplate.t
 t/release/pod-coverage.t
 t/release/pod.t
