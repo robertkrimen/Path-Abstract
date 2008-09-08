@@ -11,10 +11,17 @@ use Path::Abstract qw/path/;
 
 
 {
-    my $path = path [qw/a b c d ef g h/];
+    my $path;
+
+    $path = path [qw/a b c d ef g h/];
     is($path, "a/b/c/d/ef/g/h");
     $path = $path->child([qw/.. ij k lm/]);
     is($path, "a/b/c/d/ef/g/h/../ij/k/lm");
+
+    $path = path "/a/b/c/d";
+    is($path, "/a/b/c/d");
+    $path->pop(8);
+    is($path, "/");
 }
 
 use vars qw/$c $d/;
