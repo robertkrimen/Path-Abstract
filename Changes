@@ -3,12 +3,21 @@ TODO:
     - Add more Path::Class-style convenience methods (mkpath, contains, subsumes, etc.)
     - Make ->list more like Path::Class::Dir::list
     - Document differences between Path::Abstract and Path::Class
+    - Should '' be considered a branch?
+    - Add ->append
+    - Add ->extension
+
+0.094 -:
+    - Added ->at
+    - Added ->beginning
+    - Added ->ending
+    - ->first && ->last now return '' instead of undef
 
 0.093 Friday August 15 20:14:42 PDT 2008:
-    - Deprecating Path::Abstract::Fast
+    - Deprecating Path::Abstract::Fast (into Path::Abstract::Underload)
 
 0.092 Thursday August 07 12:06:48 PDT 2008:
-    - More test silliness;  should be fixed now
+    - More test silliness; should be fixed now
 
 0.091 Wednesday August 06 19:14:47 PDT 2008:
     - Testing bug fix

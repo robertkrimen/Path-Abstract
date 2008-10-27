@@ -246,7 +246,7 @@ Returns the first part of $path up to the first "/" (but not including the leadi
 
 sub first {
 	my $self = shift;
-	return if $self->is_nil;
+	return '' if $self->is_nil;
 	my @path = $self->list;
 	return shift @path;
 }
@@ -262,12 +262,107 @@ Returns the last part of $path up to the last "/"
 
 sub last {
 	my $self = shift;
-	return if $self->is_nil;
+	return '' if $self->is_nil;
 	my @path = $self->list;
 	return pop @path;
 }
 
-=head2 path
+=head2 $path->at( $index )
+
+Returns the part of path at $index, not including any slashes
+You can use a negative $index to start from the end of path
+
+    path("/a/b/c/").at(0)  # a (equivalent to $path->first)
+    path("/a/b/c/").at(-1) # c (equivalent to $path->last)
+    path("/a/b/c/").at(1)  # b
+
+=cut
+
+#        _at: function(position) {
+#            if (this.isEmpty()) return -1;
+#            if (1 == this._path.length && "" == this._path[0])
+#                return -1;
+#            if (0 > position)
+#                position += this._path.length;
+#            else if ("" == this._path[0])
+#                position += 1;
+#            if (position >= this._path.length)
+#                return -1;
+#            if (position == this._path.length - 1 && "" == this._path[position])
+#                position -= 1;
+#            return position;
+#        },
+
+#        at: function(position) {
+#            position = this._at(position);
+#            if (-1 == position)
+#                return "";
+#            return this._path[position];
+#//            if (this.isEmpty()) return "";
+#//            if (1 == this._path.length && "" == this._path[0])
+#//                return "";
+#//            if (0 > ii)
+#//                ii += this._path.length;
+#//            else if ("" == this._path[0])
+#//                ii += 1;
+#//            if (ii >= this._path.length)
+#//                return "";
+#//            if (ii == this._path.length - 1 && "" == this._path[ii])
+#//                ii -= 1;
+#//            return this._path[ii];
+#        },
+
+sub _at {
+    my $self = shift;
+}
+
+sub at {
+    my $self = shift;
+    return '' if $self->is_empty;
+    my @path = split '/', $$self;
+    return '' if 1 == @path && '' eq $path[0];
+    my $index = shift;
+    if (0 > $index) {
+        $index += @path;
+    }
+    elsif (! defined $path[0] || ! length $path[0]) {
+        $index += 1
+    }
+    return '' if $index >= @path;
+    $index -= 1 if $index == @path - 1 && ! defined $path[$index] || ! length $path[$index];
+    return '' unless defined $path[$index] && length $path[$index];
+    return $path[$index];
+}
+
+=head2 $path->beginning
+
+Returns the first part of path, including the leading slash, if any
+
+    path("/a/b/c/")->beginning # /a
+    path("a/b/c/")->beginning  # a
+
+=cut
+
+sub beginning {
+    my $self = shift;
+    my ($beginning) = $$self =~ m{^(\/?[^/]*)};
+    return $beginning;
+}
+
+=head2 $path->ending
+
+Returns the first part of path, including the leading slash, if any
+
+    path("/a/b/c/")->ending # c/
+    path("/a/b/c")->ending  # c
+
+=cut
+
+sub ending {
+    my $self = shift;
+    my ($ending) = $$self =~ m{([^/]*\/?)$};
+    return $ending;
+}
 
 =head2 $path->get
 
