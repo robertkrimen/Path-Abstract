@@ -4,14 +4,18 @@ TODO:
     - Make ->list more like Path::Class::Dir::list
     - Document differences between Path::Abstract and Path::Class
     - Should '' be considered a branch?
-    - Add ->append
-    - Add ->extension
+    
 
 0.094 -:
     - Added ->at
     - Added ->beginning
     - Added ->ending
     - ->first && ->last now return '' instead of undef
+    - Fixed bug where 'a.html.tar.gz'->pop = 'a'
+    - ->list now returns the empty list if $path is '/' 
+    - ->list does not return leading a leading slash '/a'->list = ('a')
+    - Added ->append
+    - Added ->extension
 
 0.093 Friday August 15 20:14:42 PDT 2008:
     - Deprecating Path::Abstract::Fast (into Path::Abstract::Underload)

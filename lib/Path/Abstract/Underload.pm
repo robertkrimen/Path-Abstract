@@ -229,9 +229,11 @@ Returns the path in list form by splitting at each "/"
 
 sub list {
 	my $self = shift;
-	return ("/") if $$self eq "/";
-	my @list = split m/(?<!^)\//, $$self;
-	return @list;
+#    my @list = split m/\//, $$self;
+    return grep { length $_ } split m/\//, $$self;
+#    return () if $$self eq "/";
+##    my @list = split m/(?<!^)\//, $$self;
+#    return @list;
 }
 for (qw(split)) { no strict 'refs'; *$_ = \&list }
 
@@ -246,6 +248,7 @@ Returns the first part of $path up to the first "/" (but not including the leadi
 
 sub first {
 	my $self = shift;
+    return $self->at(0);
 	return '' if $self->is_nil;
 	my @path = $self->list;
 	return shift @path;
@@ -262,6 +265,7 @@ Returns the last part of $path up to the last "/"
 
 sub last {
 	my $self = shift;
+    return $self->at(-1);
 	return '' if $self->is_nil;
 	my @path = $self->list;
 	return pop @path;
@@ -412,6 +416,275 @@ sub child {
 	return $child->push(@_);
 }
 
+=head2 $path->append( $part1, [ $part2 ], ... )
+
+Modify path by appending $part1 WITHOUT separating it by a slash. Any, optional,
+following $part2, ..., will be separated by slashes as normal
+
+      $path = path( "a/b/c" )
+      $path->append( "d", "ef/g", "h" ) # "a/b/cd/ef/g/h"
+
+=cut
+
+sub append {
+    my $self = shift;
+    return $self unless @_;
+    $self->set($$self . join '/', @_);
+    return $self;
+}
+
+
+=head2 $path->extension
+
+Returns the extension of path, including the leading the dot
+
+Returns "" if path does not have an extension
+
+      path( "a/b/c.html" )->extension // .html
+      path( "a/b/c" )->extension // ""
+      path( "a/b/c.tar.gz" )->extension // .gz
+      path( "a/b/c.tar.gz" )->extension({ match: "*" }) // .tar.gz
+
+=head2 $path->extension( $extension )
+
+Modify path by changing the existing extension of path, if any, to $extension
+
+      path( "a/b/c.html" )->extension( ".txt" ) // a/b/c.txt
+      path( "a/b/c.html" )->extension( "zip" ) // a/b/c.zip
+      path( "a/b/c.html" )->extension( "" ) // a/b/c
+
+Returns path
+
+=cut
+
+sub extension {
+    my $self = shift;
+
+    my $extension;
+    if (@_ && ! defined $_[0]) {
+        $extension = '';
+    }
+    elsif (ref $_[0] eq '') {
+        $extension = shift;
+    }
+
+    my $options;
+    if (ref $_[0] eq 'HASH') {
+        $options = shift;
+    }
+    else {
+        $options = { match => shift };
+    }
+
+    my $matcher = $options->{match} || 1;
+    if ('*' eq $matcher) {
+        $matcher = '';
+    }
+    if (ref $matcher eq 'Regexp') {
+    }
+    elsif ($matcher eq '' || $matcher =~ m/^\d+$/) {
+        $matcher = qr/((?:\.[^\.]+){1,$matcher})$/;
+#        $matcher = qr/(?:\.[^\.]+)$/;
+    }
+    else {
+        $matcher = qr/$matcher/;
+    }
+
+    my $ending = $self->ending;
+    if (! defined $extension) {
+        return '' if $self->is_empty || $self->is_root;
+#warn $ending, ' =~ ', $matcher;
+        return join '', $ending =~ $matcher;
+    }
+    else {
+        if ('' eq $extension) {
+        }
+        elsif ($extension !~ m/^\./) {
+            $extension = '.' . $extension;
+        }
+
+        if ($self->is_empty || $self->is_root) {
+            $self->append($extension);
+        }
+        else {
+            if ($ending =~ s/$matcher/$extension/) {
+                $self->pop;
+                $self->push($ending);
+            }
+            else {
+                $self->append($extension);
+            }
+        }
+        return $self;
+    }
+    
+}
+
+
+#        extension: function(extension, $options) {
+#            if (arguments.length == 1 && "object" == typeof extension) {
+#                $options = extension;
+#                extension = null;
+#            }
+#            else if (arguments.length) {
+#                if (null == extension)
+#                    extension = "";
+#            }
+
+#            if (!$options)
+#                $options = {};
+#            else {   
+#                if (b9j.isFunction($options.exec)) { // $options is a RegExp object
+#                    $options = { match: $options }
+#                }
+#                else if ("object" == typeof $options) {
+#                }
+#                else {
+#                    $options = { match: $options }
+#                }
+#            }   
+
+#            var matcher = $options.match || 1;
+#            if ("*" == matcher)
+#                matcher = "";
+#            if ("" == matcher || "number" == typeof matcher) {
+
+#                matcher = new RegExp("(\\.[^\\.]+){1," + matcher + "}$", "g");
+#//                var _matcher = ""
+#//                while (matcher--)
+#//                    _matcher += "(\\.[^\\.]+)?"
+#//                matcher = new RegExp(_matcher + "$", "g");
+#            }
+#            else if ("string" == typeof matcher) {
+#                matcher = new RegExp(matcher);
+#            }
+
+#            var ending = this.ending();
+
+#            if (null == extension) {
+#                if (this.isEmpty() || this.isRoot())
+#                    return "";
+#                var match = matcher.exec(ending);
+#                if (! match)
+#                    return "";
+#                return match[0];
+#            }
+#            else {
+#                if ("" == extension)
+#                    ;
+#                else if (extension[0] != ".")
+#                    extension = "." + extension
+
+#                if (this.isEmpty() || this.isRoot())
+#                    this.append(extension);
+#                else {
+#                    if (matcher.test(ending)) {
+#                        ending = ending.replace(matcher, extension);
+#                        this.pop();
+#                        this.push(ending);
+#                    }
+#                    else {
+#                        this.append(extension);
+#                    }
+#                }
+#                return this;
+#            }
+#        },
+
+#/*
+# * =head2 path.extension()
+# *
+# * Returns the extension of path, including the leading the dot
+# *
+# * Returns "" if path does not have an extension
+# *
+# *          new b9j.path.Path( "a/b/c.html" ).extension() // .html
+# *          new b9j.path.Path( "a/b/c" ).extension() // ""
+# *          new b9j.path.Path( "a/b/c.tar.gz" ).extension() // .gz
+# *          new b9j.path.Path( "a/b/c.tar.gz" ).extension({ match: "*" }) // .tar.gz
+# *
+# * =head2 path.extension( $extension )
+# *
+# * Modify path by changing the existing extension of path, if any, to $extension
+# *
+# *          new b9j.path.Path( "a/b/c.html" ).extension( ".txt" ) // a/b/c.txt
+# *          new b9j.path.Path( "a/b/c.html" ).extension( "zip" ) // a/b/c.zip
+# *          new b9j.path.Path( "a/b/c.html" ).extension( "" ) // a/b/c
+# *
+# * Returns path
+# *
+# */
+#        extension: function(extension, $options) {
+#            if (arguments.length == 1 && "object" == typeof extension) {
+#                $options = extension;
+#                extension = null;
+#            }
+#            else if (arguments.length) {
+#                if (null == extension)
+#                    extension = "";
+#            }
+
+#            if (!$options)
+#                $options = {};
+#            else {   
+#                if (b9j.isFunction($options.exec)) { // $options is a RegExp object
+#                    $options = { match: $options }
+#                }
+#                else if ("object" == typeof $options) {
+#                }
+#                else {
+#                    $options = { match: $options }
+#                }
+#            }   
+
+#            var matcher = $options.match || 1;
+#            if ("*" == matcher)
+#                matcher = "";
+#            if ("" == matcher || "number" == typeof matcher) {
+
+#                matcher = new RegExp("(\\.[^\\.]+){1," + matcher + "}$", "g");
+#//                var _matcher = ""
+#//                while (matcher--)
+#//                    _matcher += "(\\.[^\\.]+)?"
+#//                matcher = new RegExp(_matcher + "$", "g");
+#            }
+#            else if ("string" == typeof matcher) {
+#                matcher = new RegExp(matcher);
+#            }
+
+#            var ending = this.ending();
+
+#            if (null == extension) {
+#                if (this.isEmpty() || this.isRoot())
+#                    return "";
+#                var match = matcher.exec(ending);
+#                if (! match)
+#                    return "";
+#                return match[0];
+#            }
+#            else {
+#                if ("" == extension)
+#                    ;
+#                else if (extension[0] != ".")
+#                    extension = "." + extension
+
+#                if (this.isEmpty() || this.isRoot())
+#                    this.append(extension);
+#                else {
+#                    if (matcher.test(ending)) {
+#                        ending = ending.replace(matcher, extension);
+#                        this.pop();
+#                        this.push(ending);
+#                    }
+#                    else {
+#                        this.append(extension);
+#                    }
+#                }
+#                return this;
+#            }
+#        },
+
+
 =head2 $path->pop( <count> )
 
 Modify $path by removing <count> parts from the end of $path
@@ -431,7 +704,7 @@ sub pop {
 		if ($$self =~ s/(.?)([^\/]+)$//) {
 			my $popped = $2;
 			CORE::unshift(@popped, $popped) if $popped;
-			if ($1 && ! length $$self) {
+			if ($1 && $1 eq '/' && ! length $$self) { 
 				$$self = $1;
 				last;
 			}

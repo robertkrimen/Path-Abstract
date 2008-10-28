@@ -25,6 +25,85 @@ use Path::Abstract qw/path/;
 
     {
         my $path;
+        $path = path 'a.html.tar.gz';
+        $path->pop;
+        is($path, '');
+
+        $path = path '/a.html.tar.gz';
+        $path->pop;
+        is($path, '/');
+
+        $path = path 'a.html.tar.gz';
+        $path->up;
+        is($path, '');
+
+        $path = path '/a.html.tar.gz';
+        $path->up;
+        is($path, '/');
+    }
+
+    {
+        my $path;
+        # .append
+        $path = path();
+
+        $path->append("c/d");
+        is("c/d", $path.'');
+        is("d", $path->last());
+
+        $path->append("ef");
+        is("c/def", $path.'');
+        is("def", $path->last());
+
+        $path->append("", "g/");
+        is("c/def/g/", $path.'');
+        is("g", $path->last());
+    }
+
+    {
+        my $path;
+        # .extension
+        $path = path("a.tar.gz.html");
+
+        is(".html", $path->extension());
+        is(".gz.html", $path->extension({ match => 2 }));
+        is(".tar.gz.html", $path->extension({ match => 3 }));
+        is(".tar.gz.html", $path->extension({ match => 4 }));
+        is("a", $path->clone()->extension("", { match => 4 }));
+
+        is("a.tar.gz.txt", $path->clone()->extension(".txt").'');
+        is("a.tar.txt", $path->clone()->extension(".txt", 2).'');
+        is("a.txt", $path->clone()->extension(".txt", 3).'');
+        is("a.tar", $path->clone()->extension(".txt", 3)->extension(".tar").'');
+        is("a", $path->clone()->extension(".txt", 3)->extension("").'');
+
+        $path->set("");
+        is("", $path->extension());
+        is(".html", $path->clone()->extension("html").'');
+        is(".html", $path->clone()->extension(".html").'');
+        is("", $path->clone()->extension("").'');
+
+        $path->set("/");
+        is("", $path->extension());
+        is("/.html.gz", $path->clone()->extension("html.gz").'');
+        is("/.html.gz", $path->clone()->extension(".html.gz").'');
+        is("/", $path->clone()->extension("").'');
+
+        is(".html", path( "a/b/c.html" )->extension());
+        is("", path( "a/b/c" )->extension());
+        is(".gz", path( "a/b/c.tar.gz" )->extension());
+        is(".tar.gz", path( "a/b/c.tar.gz" )->extension({ match => "*" }));
+        is("a/b/c.txt", path( "a/b/c.html" )->extension( ".txt" ));
+        is("a/b/c.zip", path( "a/b/c.html" )->extension( "zip" ));
+        is("a/b/c", path( "a/b/c.html" )->extension( "" ));
+        is("a/b/c.", path( "a/b/c.html" )->extension( "." ));
+
+        $path = path("a/b/c");
+        is("a/b/c.html", $path->extension(".html").'');
+        is("a/b/c.html", $path->extension(".html").'');
+    }
+    {
+        my $path;
         $path = path();
         is("", $path . "");
         is("", $path->get());
@@ -39,7 +118,7 @@ use Path::Abstract qw/path/;
         ok(!$path->is_root());
         ok(!$path->is_tree());
         ok(!$path->is_branch());
-#        test.areEqual(new Array().toString(), $path->list().toString());
+        cmp_deeply([], [ $path->list ]);
 
         $path = path("/");
         is("/", $path . "");
@@ -47,11 +126,11 @@ use Path::Abstract qw/path/;
         is("", $path->at(0));
         is("", $path->at(-1));
         is("", $path->at(1));
-#        is("", $path->first());
-#        is("", $path->last());
+        is("", $path->first());
+        is("", $path->last());
         is("/", $path->beginning());
         is("/", $path->ending());
-#        test.areEqual([].toString(), $path->list().toString());
+        cmp_deeply([], [ $path->list ]);
         ok(!$path->is_empty());
         ok($path->is_root());
         ok($path->is_tree());
@@ -67,7 +146,7 @@ use Path::Abstract qw/path/;
         is("a", $path->last());
         is("a", $path->beginning());
         is("a", $path->ending());
-#        test.areEqual([ "a" ].toString(), $path->list().toString());
+        cmp_deeply([ 'a' ], [ $path->list ]);
         ok(!$path->is_empty());
         ok(!$path->is_root());
         ok(!$path->is_tree());
@@ -79,11 +158,11 @@ use Path::Abstract qw/path/;
         is("a", $path->at(0));
         is("a", $path->at(-1));
         is("", $path->at(1));
-#        is("a", $path->first());
-#        is("a", $path->last());
+        is("a", $path->first());
+        is("a", $path->last());
         is("/a", $path->beginning());
         is("a", $path->ending());
-#        test.areEqual([ "a" ].toString(), $path->list().toString());
+        cmp_deeply([qw/ a /], [ $path->list ]);
         ok(!$path->is_empty());
         ok(!$path->is_root());
         ok($path->is_tree());
@@ -95,11 +174,11 @@ use Path::Abstract qw/path/;
         is("a", $path->at(0));
         is("b", $path->at(-1));
         is("b", $path->at(1));
-#        is("a", $path->first());
+        is("a", $path->first());
         is("b", $path->last());
         is("/a", $path->beginning());
         is("b", $path->ending());
-#        test.areEqual([ "a", "b" ].toString(), $path->list().toString());
+        cmp_deeply([qw/ a b /], [ $path->list ]);
         ok(!$path->is_empty());
         ok(!$path->is_root());
         ok($path->is_tree());
@@ -111,11 +190,11 @@ use Path::Abstract qw/path/;
         is("a", $path->at(0));
         is("b", $path->at(-1));
         is("b", $path->at(1));
-#        is("a", $path->first());
+        is("a", $path->first());
         is("b", $path->last());
         is("/a", $path->beginning());
         is("b/", $path->ending());
-#        test.areEqual([ "a", "b" ].toString(), $path->list().toString());
+        cmp_deeply([qw/ a b /], [ $path->list ]);
         ok(!$path->is_empty());
         ok(!$path->is_root());
         ok($path->is_tree());
@@ -127,11 +206,12 @@ use Path::Abstract qw/path/;
         is("a", $path->at(0));
         is("c", $path->at(-1));
         is("b", $path->at(1));
-#        is("a", $path->first());
+        is("a", $path->first());
         is("c", $path->last());
         is("/a", $path->beginning());
         is("c", $path->ending());
-#        test.areEqual([ "a", "b", "c" ].toString(), $path->list().toString());
+        cmp_deeply([qw/ a b c /], [ $path->list ]);
+        ok(!$path->is_empty());
         ok(!$path->is_empty());
         ok(!$path->is_root());
         ok($path->is_tree());
@@ -147,7 +227,8 @@ use Path::Abstract qw/path/;
         is("c", $path->last());
         is("a", $path->beginning());
         is("c", $path->ending());
-#        test.areEqual([ "a", "b", "c" ].toString(), $path->list().toString());
+        cmp_deeply([qw/ a b c /], [ $path->list ]);
+        ok(!$path->is_empty());
         ok(!$path->is_empty());
         ok(!$path->is_root());
         ok(!$path->is_tree());
