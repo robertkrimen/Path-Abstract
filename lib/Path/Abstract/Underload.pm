@@ -218,8 +218,6 @@ sub to_branch {
 
 =head2 $path->list
 
-=head2 $path->split
-
 Returns the path in list form by splitting at each "/"
 
 	path("c/d")->list # Returns ("c", "d")
@@ -235,7 +233,17 @@ sub list {
 ##    my @list = split m/(?<!^)\//, $$self;
 #    return @list;
 }
-for (qw(split)) { no strict 'refs'; *$_ = \&list }
+for (qw()) { no strict 'refs'; *$_ = \&list }
+
+=head2 $path->split
+
+=cut
+
+sub split {
+    my $self = shift;
+    my @split = split m/(?<=.)\/(?=.)/, $$self;
+    return @split;
+}
 
 =head2 $path->first
 

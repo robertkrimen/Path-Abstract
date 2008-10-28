@@ -43,6 +43,18 @@ use Path::Abstract qw/path/;
     }
 
     {
+        cmp_deeply([ path( 'a/b/c' )->list ], [qw/ a b c /]);
+        cmp_deeply([ path( '/a/b/c' )->list ], [qw/ a b c /]);
+        cmp_deeply([ path( '/a/b/c/' )->list ], [qw/ a b c /]);
+        cmp_deeply([ path( 'a/b/c/' )->list ], [qw/ a b c /]);
+
+        cmp_deeply([ path( 'a/b/c' )->split ], [qw( a b c )]);
+        cmp_deeply([ path( '/a/b/c' )->split ], [qw( /a b c )]);
+        cmp_deeply([ path( '/a/b/c/' )->split ], [qw( /a b c/ )]);
+        cmp_deeply([ path( 'a/b/c/' )->split ], [qw( a b c/ )]);
+    }
+
+    {
         my $path;
         # .append
         $path = path();

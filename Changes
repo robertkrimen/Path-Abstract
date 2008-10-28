@@ -16,6 +16,8 @@ TODO:
     - ->list does not return leading a leading slash '/a'->list = ('a')
     - Added ->append
     - Added ->extension
+    - Added ->split which is (somewhat) equivalent of old ->list
+    
 
 0.093 Friday August 15 20:14:42 PDT 2008:
     - Deprecating Path::Abstract::Fast (into Path::Abstract::Underload)
