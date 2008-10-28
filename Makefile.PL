@@ -3,6 +3,8 @@ use inc::Module::Install;
 name 'Path-Abstract';
 all_from 'lib/Path/Abstract.pm';
 
+resources repository => 'http://github.com/robertkrimen/path-abstract/tree/master';
+
 {
     require ExtUtils::MakeMaker;
     use strict;
@@ -32,6 +34,11 @@ _END_
     map { my ($pk, $vr) = split m/\s/; recommends $pk => $vr || 0 } grep { ! /^\s*#/ } split m/\n/, <<_END_;
 Path::Class
 _END_
+}
+
+if (-e 'inc/.author') {
+    my $all_from = join '/', 'lib', split m/-/, name . '.pm';
+    `perldoc -tF $all_from > README` if ! -e 'README' || (stat $all_from)[9] > (stat 'README')[9];
 }
 
 auto_install;

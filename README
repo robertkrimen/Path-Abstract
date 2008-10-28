@@ -1,38 +1,191 @@
-Path-Abstract
+NAME
+    Path::Abstract - Fast and featureful UNIX-style path manipulation
 
-INSTALLATION
+VERSION
+    Version 0.093
 
-To install this module, run the following commands:
+SYNOPSIS
+      use Path::Abstract;
 
-    perl Build.PL
-    ./Build
-    ./Build test
-    ./Build install
+      my $path = Path::Abstract->new("/apple/banana");
 
+      # $parent is "/apple"
+      my $parent = $path->parent;
 
-SUPPORT AND DOCUMENTATION
+      # $cherry is "/apple/banana/cherry.txt"
+      my $cherry = $path->child("cherry.txt");
 
-After installing, you can find documentation for this module with the perldoc command.
+METHODS
+  Path::Abstract->new( <path> )
+  Path::Abstract->new( <part>, [ <part>, ..., <part> ] )
+    Create a new "Path::Abstract" object using <path> or by joining each
+    <part> with "/"
 
-    perldoc Path::Abstract
+    Returns the new "Path::Abstract" object
 
-You can also look for information at:
+  Path::Abstract::path( <path> )
+  Path::Abstract::path( <part>, [ <part>, ..., <part> ] )
+    Create a new "Path::Abstract" object using <path> or by joining each
+    <part> with "/"
 
-    Search CPAN
-        http://search.cpan.org/dist/Path-Abstract
+    Returns the new "Path::Abstract" object
 
-    CPAN Request Tracker:
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Path-Abstract
+  $path->clone
+    Returns an exact copy of $path
 
-    AnnoCPAN, annotated CPAN documentation:
-        http://annocpan.org/dist/Path-Abstract
+  $path->set( <path> )
+  $path->set( <part>, [ <part>, ..., <part> ] )
+    Set the path of $path to <path> or the concatenation of each <part>
+    (separated by "/")
 
-    CPAN Ratings:
-        http://cpanratings.perl.org/d/Path-Abstract
+    Returns $path
 
-COPYRIGHT AND LICENCE
+  $path->is_nil
+  $path->is_empty
+    Returns true if $path is equal to ""
 
-Copyright (C) 2007 Robert Krimen
+  $path->is_root
+    Returns true if $path is equal to "/"
 
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+  $path->is_tree
+    Returns true if $path begins with "/"
+
+            path("/a/b")->is_tree # Returns true
+            path("c/d")->is_tree # Returns false
+
+  $path->is_branch
+    Returns true if $path does NOT begin with a "/"
+
+            path("c/d")->is_branch # Returns true
+            path("/a/b")->is_branch # Returns false
+
+  $path->to_tree
+    Change $path by prefixing a "/" if it doesn't have one already
+
+    Returns $path
+
+  $path->to_branch
+    Change $path by removing a leading "/" if it has one
+
+    Returns $path
+
+  $path->list
+  $path->split
+    Returns the path in list form by splitting at each "/"
+
+            path("c/d")->list # Returns ("c", "d")
+            path("/a/b/")->last # Returns ("a", "b")
+
+  $path->first
+    Returns the first part of $path up to the first "/" (but not including
+    the leading slash, if any)
+
+            path("c/d")->first # Returns "c"
+            path("/a/b")->first # Returns "a"
+
+  $path->last
+    Returns the last part of $path up to the last "/"
+
+            path("c/d")->last # Returns "d"
+            path("/a/b/")->last # Returns "b"
+
+  $path->get
+  $path->stringify
+    Returns the path in string or scalar form
+
+            path("c/d")->get # Returns "c/d"
+
+  $path->push( <part>, [ <part>, ..., <part> ] )
+  $path->down( <part>, [ <part>, ..., <part> ] )
+    Modify $path by appending each <part> to the end of \$path, separated by
+    "/"
+
+    Returns $path
+
+  $path->child( <part>, [ <part>, ..., <part> ] )
+    Make a copy of $path and push each <part> to the end of the new path.
+
+    Returns the new child path
+
+  $path->pop( <count> )
+    Modify $path by removing <count> parts from the end of $path
+
+    Returns the removed path as a "Path::Abstract" object
+
+  $path->up( <count> )
+    Modify $path by removing <count> parts from the end of $path
+
+    Returns $path
+
+  $path->parent( <count> )
+    Make a copy of $path and pop <count> parts from the end of the new path
+
+    Returns the new parent path
+
+  $path->dir
+  $path->dir( <part>, [ <part>, ..., <part> ] )
+    Create a new "Path::Class::Dir" object using $path as a base, and
+    optionally extending it by each <part>
+
+    Returns the new dir object
+
+  $path->file
+  $path->file( <part>, [ <part>, ..., <part> ] )
+    Create a new "Path::Class::File" object using $path as a base, and
+    optionally extending it by each <part>
+
+    Returns the new file object
+
+SEE ALSO
+    Path::Class
+
+    File::Spec
+
+    Path::Resource
+
+AUTHOR
+    Robert Krimen, "<rkrimen at cpan.org>"
+
+SOURCE
+    You can contribute or fork this project via GitHub:
+
+    <http://github.com/robertkrimen/path-abstract/tree/master>
+
+        git clone git://github.com/robertkrimen/path-abstract.git Path-Abstract
+
+BUGS
+    Please report any bugs or feature requests to "bug-path-lite at
+    rt.cpan.org", or through the web interface at
+    <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Path-Abstract>. I will
+    be notified, and then you'll automatically be notified of progress on
+    your bug as I make changes.
+
+SUPPORT
+    You can find documentation for this module with the perldoc command.
+
+        perldoc Path::Abstract
+
+    You can also look for information at:
+
+    * AnnoCPAN: Annotated CPAN documentation
+        <http://annocpan.org/dist/Path-Abstract>
+
+    * CPAN Ratings
+        <http://cpanratings.perl.org/d/Path-Abstract>
+
+    * RT: CPAN's request tracker
+        <http://rt.cpan.org/NoAuth/Bugs.html?Dist=Path-Abstract>
+
+    * Search CPAN
+        <http://search.cpan.org/dist/Path-Abstract>
+
+ACKNOWLEDGEMENTS
+    Thanks to Joshua ben Jore, Max Kanat-Alexander, and Scott McWhirter for
+    discovering the "use overload ..." slowdown issue.
+
+COPYRIGHT & LICENSE
+    Copyright 2007 Robert Krimen, all rights reserved.
+
+    This program is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
+
