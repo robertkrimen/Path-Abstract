@@ -7,7 +7,7 @@ use Test::Most;
 
 plan qw/no_plan/;
 
-use Path::Abstract qw/path/;
+use Path::Abstract qw/path --no_0_093_warning/;
 
 {
     my $path;
@@ -114,6 +114,98 @@ use Path::Abstract qw/path/;
         is("a/b/c.html", $path->extension(".html").'');
         is("a/b/c.html", $path->extension(".html").'');
     }
+
+    {
+        my $path = path;
+
+        $path->set("c/");
+        $path->pop();
+        is("", $path->get());
+
+        $path->set("/c/");
+        $path->pop();
+        is("/", $path->get());
+        $path->pop();
+        is("/", $path->get());
+    }
+
+    exit;
+
+    {
+        my $path = path;
+
+        # .get
+        $path = path("a/b", "c/d", "e");
+        is("a/b/c/d/e", $path->get());
+
+        # .set
+        $path->set("");
+        is("", $path->get());
+
+        $path->set("/");
+        is("/", $path->get());
+
+        $path->set("a", "b/c//");
+        is("a/b/c/", $path->get());
+
+        $path->set("a/b/c/d/e");
+        is("a/b/c/d/e", $path->get());
+
+        # .pop
+        $path->pop();
+        is("a/b/c/d", $path->get());
+
+        $path->pop(2);
+        is("a/b", $path->get());
+
+        $path->pop(3);
+        is("", $path->get());
+
+        $path = path("/a/b/c");
+        $path->pop(10);
+        is("/", $path->get());
+
+        $path->set("/");
+        $path->pop();
+        is("/", $path->get());
+
+        # .push
+        $path->push("a");
+        is("/a", $path->get());
+
+        $path->push("a", "b/c//");
+        is("/a/a/b/c/", $path->get());
+
+        $path->push(path.'');
+        is("/a/a/b/c/a/a/b/c/", $path->get());
+
+        is("/a/a/b/c/a/a/b/c/", $path->get());
+
+        # .up .down
+        $path->set("a");
+        $path->up();
+        is("", path.'');
+
+        $path->down("a/b/c")->up();
+        is("a/b", path.'');
+
+        $path->down("/h/i/j//")->up()->up()->up();
+        is("a/b", path.'');
+
+        $path->down("/h/i/j//")->up(3);
+        is("a/b", path.'');
+
+        $path->set("/");
+        $path->up();
+        is("/", path.'');
+
+        $path->down("a");
+        is("/a", path.'');
+
+        $path->down(1);
+        is("/a/1", path.'');
+    }
+
     {
         my $path;
         $path = path();

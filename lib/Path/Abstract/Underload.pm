@@ -51,6 +51,103 @@ You'll have to do this instead:
 
 Or, just use L<Path::Abstract>
 
+=head1 Different behavior since 0.093
+
+Some methods of Path::Abstract have changed since 0.093 with the goal of having better/more consistent behavior
+
+Unfortunately, this MAY result in code that worked with 0.093 and earlier be updated to reflect the new behavior
+
+The following has changed:
+
+=over
+
+=item $path->list
+
+The old behavior (kept the leading slash but dropped trailing slash):
+
+    path('/a/b/c/')->list    # ( '/a', 'b', 'c' )
+    path('a/b/c/')->list     # ( 'a', 'b', 'c' )
+
+The new behavior (neither slash is kept):
+
+    path('/a/b/c/')->list    # ( 'a', 'b', 'c' )
+    path('a/b/c/')->list     # ( 'a', 'b', 'c' )
+
+In addition, $path->split was an alias for $path->list, but this has changed. Now split
+WILL keep BOTH leading and trailing slashes (if any):
+
+    path('/a/b/c/')->split    # ( '/a', 'b', 'c/' )
+    path('a/b/c/')->split     # ( 'a', 'b', 'c/' )
+    path('a/b/c')->split      # ( 'a', 'b', 'c' ) Effectively equivalent to ->list
+
+=item $path->split
+
+See the above note on $path->list
+
+=item $path->first
+
+The old behavior:
+
+    1. Would return undef for the empty path
+    2. Would include the leading slash (if present)
+    2. Would NOT include the trailing slash (if present)
+    
+    path(undef)->first  # undef
+    path('')->first     # undef
+    path('/a')->first   # /a
+    path('/a/')->first  # /a
+    path('a')->first    # a
+
+The new behavior:
+
+    1. Always returns at least the empty string
+    2. Never includes any slashes
+
+    path(undef)->first  # ''
+    path('')->first     # ''
+    path('/a')->first   # a
+    path('/a/')->first  # a
+    path('a')->first    # a
+
+For an alternative to ->first, try ->beginning
+
+=item $path->last
+
+Simlar to ->first
+
+The old behavior:
+    
+    1. Would return undef for the empty path
+    2. Would include the leading slash (if present)
+    2. Would NOT include the trailing slash (if present)
+    
+    path(undef)->last  # undef
+    path('')->last     # undef
+    path('/a')->last   # /a
+    path('/a/')->last  # /a
+    path('a')->last    # a
+    path('a/b')->last  # b
+    path('a/b/')->last # b
+
+The new behavior:
+
+    1. Always returns at least the empty string
+    2. Never includes any slashes
+
+    path(undef)->last  # ''
+    path('')->last     # ''
+    path('/a')->last   # a
+    path('/a/')->last  # a
+    path('a')->last    # a
+    path('a/b')->last  # b
+    path('a/b/')->last # b
+
+For an alternative to ->last, try ->ending
+
+# TODO ->branch?
+
+=back
+
 =head1 METHODS
 
 =cut
@@ -223,15 +320,14 @@ Returns the path in list form by splitting at each "/"
 	path("c/d")->list # Returns ("c", "d")
 	path("/a/b/")->last # Returns ("a", "b")
 
+NOTE: This behavior is different since 0.093 (see above)
+
 =cut
 
 sub list {
 	my $self = shift;
-#    my @list = split m/\//, $$self;
+    Path::Abstract->_0_093_warn if $Path::Abstract::_0_093_warn;
     return grep { length $_ } split m/\//, $$self;
-#    return () if $$self eq "/";
-##    my @list = split m/(?<!^)\//, $$self;
-#    return @list;
 }
 for (qw()) { no strict 'refs'; *$_ = \&list }
 
@@ -241,6 +337,7 @@ for (qw()) { no strict 'refs'; *$_ = \&list }
 
 sub split {
     my $self = shift;
+    Path::Abstract->_0_093_warn if $Path::Abstract::_0_093_warn;
     my @split = split m/(?<=.)\/(?=.)/, $$self;
     return @split;
 }
@@ -252,14 +349,14 @@ Returns the first part of $path up to the first "/" (but not including the leadi
 	path("c/d")->first # Returns "c"
 	path("/a/b")->first # Returns "a"
 
+This is equivalent to $path->at(0)
+
 =cut
 
 sub first {
 	my $self = shift;
+    Path::Abstract->_0_093_warn if $Path::Abstract::_0_093_warn;
     return $self->at(0);
-	return '' if $self->is_nil;
-	my @path = $self->list;
-	return shift @path;
 }
 
 =head2 $path->last
@@ -269,14 +366,14 @@ Returns the last part of $path up to the last "/"
 	path("c/d")->last # Returns "d"
 	path("/a/b/")->last # Returns "b"
 
+This is equivalent to $path->at(-1)
+
 =cut
 
 sub last {
 	my $self = shift;
+    Path::Abstract->_0_093_warn if $Path::Abstract::_0_093_warn;
     return $self->at(-1);
-	return '' if $self->is_nil;
-	my @path = $self->list;
-	return pop @path;
 }
 
 =head2 $path->at( $index )
@@ -289,44 +386,6 @@ You can use a negative $index to start from the end of path
     path("/a/b/c/").at(1)  # b
 
 =cut
-
-#        _at: function(position) {
-#            if (this.isEmpty()) return -1;
-#            if (1 == this._path.length && "" == this._path[0])
-#                return -1;
-#            if (0 > position)
-#                position += this._path.length;
-#            else if ("" == this._path[0])
-#                position += 1;
-#            if (position >= this._path.length)
-#                return -1;
-#            if (position == this._path.length - 1 && "" == this._path[position])
-#                position -= 1;
-#            return position;
-#        },
-
-#        at: function(position) {
-#            position = this._at(position);
-#            if (-1 == position)
-#                return "";
-#            return this._path[position];
-#//            if (this.isEmpty()) return "";
-#//            if (1 == this._path.length && "" == this._path[0])
-#//                return "";
-#//            if (0 > ii)
-#//                ii += this._path.length;
-#//            else if ("" == this._path[0])
-#//                ii += 1;
-#//            if (ii >= this._path.length)
-#//                return "";
-#//            if (ii == this._path.length - 1 && "" == this._path[ii])
-#//                ii -= 1;
-#//            return this._path[ii];
-#        },
-
-sub _at {
-    my $self = shift;
-}
 
 sub at {
     my $self = shift;
@@ -492,7 +551,6 @@ sub extension {
     }
     elsif ($matcher eq '' || $matcher =~ m/^\d+$/) {
         $matcher = qr/((?:\.[^\.]+){1,$matcher})$/;
-#        $matcher = qr/(?:\.[^\.]+)$/;
     }
     else {
         $matcher = qr/$matcher/;
@@ -501,7 +559,6 @@ sub extension {
     my $ending = $self->ending;
     if (! defined $extension) {
         return '' if $self->is_empty || $self->is_root;
-#warn $ending, ' =~ ', $matcher;
         return join '', $ending =~ $matcher;
     }
     else {
@@ -527,171 +584,6 @@ sub extension {
     }
     
 }
-
-
-#        extension: function(extension, $options) {
-#            if (arguments.length == 1 && "object" == typeof extension) {
-#                $options = extension;
-#                extension = null;
-#            }
-#            else if (arguments.length) {
-#                if (null == extension)
-#                    extension = "";
-#            }
-
-#            if (!$options)
-#                $options = {};
-#            else {   
-#                if (b9j.isFunction($options.exec)) { // $options is a RegExp object
-#                    $options = { match: $options }
-#                }
-#                else if ("object" == typeof $options) {
-#                }
-#                else {
-#                    $options = { match: $options }
-#                }
-#            }   
-
-#            var matcher = $options.match || 1;
-#            if ("*" == matcher)
-#                matcher = "";
-#            if ("" == matcher || "number" == typeof matcher) {
-
-#                matcher = new RegExp("(\\.[^\\.]+){1," + matcher + "}$", "g");
-#//                var _matcher = ""
-#//                while (matcher--)
-#//                    _matcher += "(\\.[^\\.]+)?"
-#//                matcher = new RegExp(_matcher + "$", "g");
-#            }
-#            else if ("string" == typeof matcher) {
-#                matcher = new RegExp(matcher);
-#            }
-
-#            var ending = this.ending();
-
-#            if (null == extension) {
-#                if (this.isEmpty() || this.isRoot())
-#                    return "";
-#                var match = matcher.exec(ending);
-#                if (! match)
-#                    return "";
-#                return match[0];
-#            }
-#            else {
-#                if ("" == extension)
-#                    ;
-#                else if (extension[0] != ".")
-#                    extension = "." + extension
-
-#                if (this.isEmpty() || this.isRoot())
-#                    this.append(extension);
-#                else {
-#                    if (matcher.test(ending)) {
-#                        ending = ending.replace(matcher, extension);
-#                        this.pop();
-#                        this.push(ending);
-#                    }
-#                    else {
-#                        this.append(extension);
-#                    }
-#                }
-#                return this;
-#            }
-#        },
-
-#/*
-# * =head2 path.extension()
-# *
-# * Returns the extension of path, including the leading the dot
-# *
-# * Returns "" if path does not have an extension
-# *
-# *          new b9j.path.Path( "a/b/c.html" ).extension() // .html
-# *          new b9j.path.Path( "a/b/c" ).extension() // ""
-# *          new b9j.path.Path( "a/b/c.tar.gz" ).extension() // .gz
-# *          new b9j.path.Path( "a/b/c.tar.gz" ).extension({ match: "*" }) // .tar.gz
-# *
-# * =head2 path.extension( $extension )
-# *
-# * Modify path by changing the existing extension of path, if any, to $extension
-# *
-# *          new b9j.path.Path( "a/b/c.html" ).extension( ".txt" ) // a/b/c.txt
-# *          new b9j.path.Path( "a/b/c.html" ).extension( "zip" ) // a/b/c.zip
-# *          new b9j.path.Path( "a/b/c.html" ).extension( "" ) // a/b/c
-# *
-# * Returns path
-# *
-# */
-#        extension: function(extension, $options) {
-#            if (arguments.length == 1 && "object" == typeof extension) {
-#                $options = extension;
-#                extension = null;
-#            }
-#            else if (arguments.length) {
-#                if (null == extension)
-#                    extension = "";
-#            }
-
-#            if (!$options)
-#                $options = {};
-#            else {   
-#                if (b9j.isFunction($options.exec)) { // $options is a RegExp object
-#                    $options = { match: $options }
-#                }
-#                else if ("object" == typeof $options) {
-#                }
-#                else {
-#                    $options = { match: $options }
-#                }
-#            }   
-
-#            var matcher = $options.match || 1;
-#            if ("*" == matcher)
-#                matcher = "";
-#            if ("" == matcher || "number" == typeof matcher) {
-
-#                matcher = new RegExp("(\\.[^\\.]+){1," + matcher + "}$", "g");
-#//                var _matcher = ""
-#//                while (matcher--)
-#//                    _matcher += "(\\.[^\\.]+)?"
-#//                matcher = new RegExp(_matcher + "$", "g");
-#            }
-#            else if ("string" == typeof matcher) {
-#                matcher = new RegExp(matcher);
-#            }
-
-#            var ending = this.ending();
-
-#            if (null == extension) {
-#                if (this.isEmpty() || this.isRoot())
-#                    return "";
-#                var match = matcher.exec(ending);
-#                if (! match)
-#                    return "";
-#                return match[0];
-#            }
-#            else {
-#                if ("" == extension)
-#                    ;
-#                else if (extension[0] != ".")
-#                    extension = "." + extension
-
-#                if (this.isEmpty() || this.isRoot())
-#                    this.append(extension);
-#                else {
-#                    if (matcher.test(ending)) {
-#                        ending = ending.replace(matcher, extension);
-#                        this.pop();
-#                        this.push(ending);
-#                    }
-#                    else {
-#                        this.append(extension);
-#                    }
-#                }
-#                return this;
-#            }
-#        },
-
 
 =head2 $path->pop( <count> )
 

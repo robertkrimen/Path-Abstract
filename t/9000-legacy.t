@@ -158,13 +158,13 @@ $template->test([
 # list {{{
 $template->test([
 	[ "%?->list" => is => [] ],
-	[ "%?->list" => is => ["/"] ],
+	[ "%?->list" => is => [] ],
 	[ "%?->list" => is => ["a"] ],
-	[ "%?->list" => is => ["/a"] ],
+	[ "%?->list" => is => ["a"] ],
 	[ "%?->list" => is => ["a","b"] ],
-	[ "%?->list" => is => ["/a","b"] ],
+	[ "%?->list" => is => ["a","b"] ],
 	[ "%?->list" => is => ["a", "b", "c"] ],
-	[ "%?->list" => is => ["/a", "b", "c"] ],
+	[ "%?->list" => is => ["a", "b", "c"] ],
 	[ "%?->list" => is => [] ],
 	[ "%?->list" => is => [] ],
 	[ "%?->list" => is => ["a", "b", "c", "d"] ],
@@ -172,31 +172,31 @@ $template->test([
 # }}}
 # first {{{
 $template->test([
-	[ "%?->first" => is => undef ],
-	[ "%?->first" => is => ["/"] ],
+	[ "%?->first" => is => [''] ],
+	[ "%?->first" => is => [''] ],
 	[ "%?->first" => is => ["a"] ],
-	[ "%?->first" => is => ["/a"] ],
 	[ "%?->first" => is => ["a"] ],
-	[ "%?->first" => is => ["/a"] ],
 	[ "%?->first" => is => ["a"] ],
-	[ "%?->first" => is => ["/a"] ],
-	[ "%?->first" => is => [] ],
-	[ "%?->first" => is => [] ],
+	[ "%?->first" => is => ["a"] ],
+	[ "%?->first" => is => ["a"] ],
+	[ "%?->first" => is => ["a"] ],
+	[ "%?->first" => is => [''] ],
+	[ "%?->first" => is => [''] ],
 	[ "%?->first" => is => ["a"] ],
 ]);
 # }}}
 # last {{{
 $template->test([
-	[ "%?->last" => is => undef ],
-	[ "%?->last" => is => ["/"] ],
+	[ "%?->last" => is => [''] ],
+	[ "%?->last" => is => [''] ],
 	[ "%?->last" => is => ["a"] ],
-	[ "%?->last" => is => ["/a"] ],
+	[ "%?->last" => is => ["a"] ],
 	[ "%?->last" => is => ["b"] ],
 	[ "%?->last" => is => ["b"] ],
 	[ "%?->last" => is => ["c"] ],
 	[ "%?->last" => is => ["c"] ],
-	[ "%?->last" => is => [] ],
-	[ "%?->last" => is => [] ],
+	[ "%?->last" => is => [''] ],
+	[ "%?->last" => is => [''] ],
 	[ "%?->last" => is => ["d"] ],
 ]);
 # }}}

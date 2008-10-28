@@ -25,13 +25,29 @@ Version 0.093
 
 =cut
 
-our $VERSION = '0.093';
 
-use Sub::Exporter -setup => {
-	exports => [ path => sub { sub {
-		return __PACKAGE__->new(@_)
-	} } ],
-};
+use vars qw/$VERSION $_0_093_warn %_0_093_warning/;
+
+$VERSION = '0.093';
+
+$_0_093_warn = 1;
+
+use Sub::Exporter;
+{
+    my $exporter = Sub::Exporter::build_exporter({
+        exports => [ path => sub { sub {
+            return __PACKAGE__->new(@_)
+        } } ],
+    });
+
+    sub import {
+        if (@_ && grep { defined && $_ eq '--no_0_093_warning' } @_) {
+            $_0_093_warn = 0;
+        }
+        @_ = grep { ! defined || $_ !~ m/^--/ } @_;
+        goto $exporter;
+    };
+}
 
 use overload
 	'""' => 'get',
@@ -39,6 +55,19 @@ use overload
 ;
 
 use base qw/Path::Abstract::Underload/;
+
+use Carp;
+sub _0_093_warn {
+    if ($_0_093_warn) {
+        my ($package, $filename, $line, $subroutine) = caller(1);
+        if (! $_0_093_warning{$subroutine}) {
+            $_0_093_warning{$subroutine} = 1;
+            $subroutine =~ s/::Underload//g;
+            carp "** $subroutine behavior has changed since 0.093\n" . 
+                 "** To disable this warning: use Path::Abstract qw/--no_0_093_warning/"
+        }
+    }
+}
 
 =head1 METHODS
 
