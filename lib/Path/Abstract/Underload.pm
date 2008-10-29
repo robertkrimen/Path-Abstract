@@ -593,19 +593,41 @@ Returns the removed path as a C<Path::Abstract::Underload> object
 
 =cut
 
-sub pop {
+my %pop_re = (
+    '' => qr{(.)?([^/]+)/?$},
+    '+' => qr{(.)?([^/]+)/?$},
+    '*' => qr{(.)?([^/]+/?)$},
+);
+
+sub _pop {
 	my $self = shift;
-	return (ref $self)->new('') if $self->is_empty || $self->is_root;
-	my $count = 1;
-	$count = shift @_ if @_;
+	return '' if $self->is_empty;
+	my $count = shift @_;
+    $count = 1 unless defined $count;
+    my ($greed, $greed_plus, $greed_star);
+    if ($count =~ s/([+*])$//) {
+        $greed = $1;
+        if ($greed eq '+')  { $greed_plus = 1 }
+        else                { $greed_star = 1 }
+    }
+    else {
+        $greed = '';
+    }
+    my $re = $pop_re{$greed};
+    $count = 1 unless length $count;
 	my @popped;
 
 	while ($count--) {
-		if ($$self =~ s/(.?)([^\/]+)$//) {
+		if ($$self =~ s/$re//) {
 			my $popped = $2;
-			CORE::unshift(@popped, $popped) if $popped;
+			unshift(@popped, $popped) if $popped;
 			if ($1 && $1 eq '/' && ! length $$self) { 
-				$$self = $1;
+                if ($greed) {
+                    substr $popped[0], 0, 0, $1;
+                }
+                else {
+                    $$self = $1;
+                }
 				last;
 			}
 			elsif (! $$self) {
@@ -613,7 +635,14 @@ sub pop {
 			}
 		}
 	}
-	return (ref $self)->new(join '/', @popped);
+	return \@popped;
+}
+
+sub pop {
+	my $self = shift;
+	return (ref $self)->new('') if $self->is_empty;
+    my $popped = $self->_pop(@_);
+	return (ref $self)->new(join '/', @$popped);
 }
 
 =head2 $path->up( <count> )
@@ -625,23 +654,30 @@ Returns $path
 =cut
 
 sub up {
-	my $self = shift;
-	return $self if $self->is_empty || $self->is_root;
-	my $count = 1;
-	$count = shift @_ if @_;
-	while (! $self->is_empty && $count--) {
-		if ($$self =~ s/(^|^\/|\/)([^\/]+)$//) {
-			if ($1 && ! length $$self) {
-				$$self = $1;
-				last;
-			}
-			elsif (! $$self) {
-				last;
-			}
-		}
-	}
-	return $self;
+    my $self = shift;
+    return $self if $self->is_empty;
+    $self->_pop(@_);
+    return $self;
 }
+
+#sub up {
+#    my $self = shift;
+#    return $self if $self->is_empty;
+#    my $count = 1;
+#    $count = shift @_ if @_;
+#    while (! $self->is_empty && $count--) {
+#        if ($$self =~ s/(^|^\/|\/)([^\/]+)$//) {
+#            if ($1 && ! length $$self) {
+#                $$self = $1;
+#                last;
+#            }
+#            elsif (! $$self) {
+#                last;
+#            }
+#        }
+#    }
+#    return $self;
+#}
 
 =head2 $path->parent( <count> )
 

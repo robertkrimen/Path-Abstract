@@ -18,6 +18,7 @@ TODO:
     - Changed ->last
     - Added ->append
     - Added ->extension
+    - Added greediness ('+' & '*') to ->pop and ->up
 
 0.093 Friday August 15 20:14:42 PDT 2008:
     - Deprecating Path::Abstract::Fast (into Path::Abstract::Underload)

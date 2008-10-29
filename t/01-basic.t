@@ -116,20 +116,323 @@ use Path::Abstract qw/path --no_0_093_warning/;
     }
 
     {
+        # non-greedy
         my $path = path;
 
-        $path->set("c/");
-        $path->pop();
-        is("", $path->get());
+        $path->set('a/');
+        is($path->pop, 'a');
+        is($path->get, '');
+        is($path->pop, '');
+        is($path->get, '');
 
-        $path->set("/c/");
-        $path->pop();
-        is("/", $path->get());
-        $path->pop();
-        is("/", $path->get());
+        $path->set('/a/');
+        is($path->pop, 'a');
+        is($path->get, '/');
+        is($path->pop, '');
+        is($path->get, '/');
+
+        $path->set('/a');
+        is($path->pop, 'a');
+        is($path->get, '/');
+        is($path->pop, '');
+        is($path->get, '/');
+
+        $path->set('/a/b/c/');
+        is($path->pop, 'c');
+        is($path->get, '/a/b');
+        is($path->pop, 'b');
+        is($path->get, '/a');
+        is($path->pop, 'a');
+        is($path->get, '/');
+
+        $path->set('a/');
+        $path->up;
+        is($path->get, '');
+        $path->up;
+        is($path->get, '');
+
+        $path->set('/a/');
+        $path->up;
+        is($path->get, '/');
+        $path->up;
+        is($path->get, '/');
+
+        $path->set('/a');
+        $path->up;
+        is($path->get, '/');
+        $path->up;
+        is($path->get, '/');
+
+        $path->set('/a/b/c/');
+        $path->up;
+        is($path->get, '/a/b');
+        $path->up;
+        is($path->get, '/a');
+        $path->up;
+        is($path->get, '/');
     }
 
-    exit;
+    {
+        # greedy +
+        my $path = path;
+
+        $path->set('a/');
+        is($path->pop('+'), 'a');
+        is($path->get, '');
+        is($path->pop('+'), '');
+        is($path->get, '');
+
+        $path->set('/a/');
+        is($path->pop('+'), '/a');
+        is($path->get, '');
+        is($path->pop('+'), '');
+        is($path->get, '');
+
+        $path->set('/a');
+        is($path->pop('+'), '/a');
+        is($path->get, '');
+        is($path->pop('+'), '');
+        is($path->get, '');
+
+        $path->set('/a/b/c/');
+        is($path->pop('+'), 'c');
+        is($path->get, '/a/b');
+        is($path->pop('+'), 'b');
+        is($path->get, '/a');
+        is($path->pop('+'), '/a');
+        is($path->get, '');
+
+        $path->set('a/');
+        $path->up('+');
+        is($path->get, '');
+        $path->up('+');
+        is($path->get, '');
+
+        $path->set('/a/');
+        $path->up('+');
+        is($path->get, '');
+        $path->up('+');
+        is($path->get, '');
+
+        $path->set('/a');
+        $path->up('+');
+        is($path->get, '');
+        $path->up('+');
+        is($path->get, '');
+
+        $path->set('/a/b/c/');
+        $path->up('+');
+        is($path->get, '/a/b');
+        $path->up('+');
+        is($path->get, '/a');
+        $path->up('+');
+        is($path->get, '');
+    }
+
+    {
+        # greedy *
+        my $path = path;
+
+        $path->set('a/');
+        is($path->pop('*'), 'a/');
+        is($path->get, '');
+        is($path->pop('*'), '');
+        is($path->get, '');
+
+        $path->set('/a/');
+        is($path->pop('*'), '/a/');
+        is($path->get, '');
+        is($path->pop('*'), '');
+        is($path->get, '');
+
+        $path->set('/a');
+        is($path->pop('*'), '/a');
+        is($path->get, '');
+        is($path->pop('*'), '');
+        is($path->get, '');
+
+        $path->set('/a/b/c/');
+        is($path->pop('*'), 'c/');
+        is($path->get, '/a/b');
+        is($path->pop('*'), 'b');
+        is($path->get, '/a');
+        is($path->pop('*'), '/a');
+        is($path->get, '');
+
+        $path->set('a/');
+        $path->up('*');
+        is($path->get, '');
+        $path->up('*');
+        is($path->get, '');
+
+        $path->set('/a/');
+        $path->up('*');
+        is($path->get, '');
+        $path->up('*');
+        is($path->get, '');
+
+        $path->set('/a');
+        $path->up('*');
+        is($path->get, '');
+        $path->up('*');
+        is($path->get, '');
+
+        $path->set('/a/b/c/');
+        $path->up('*');
+        is($path->get, '/a/b');
+        $path->up('*');
+        is($path->get, '/a');
+        $path->up('*');
+        is($path->get, '');
+    }
+
+    {
+        my $path;
+
+        # non-greedy
+        is(($path = path('a/b/c'))->pop('4'), 'a/b/c');
+        is($path->get, '');
+
+        is(($path = path('a/b/c'))->pop('3'), 'a/b/c');
+        is($path->get, '');
+
+        is(($path = path('a/b/c'))->pop('2'), 'b/c');
+        is($path->get, 'a');
+
+        is(($path = path('a/b/c'))->pop('1'), 'c');
+        is($path->get, 'a/b');
+
+        is(($path = path('a/b/c'))->pop('0'), '');
+        is($path->get, 'a/b/c');
+
+        # greedy-+
+        is(($path = path('a/b/c'))->pop('4+'), 'a/b/c');
+        is($path->get, '');
+
+        is(($path = path('a/b/c'))->pop('3+'), 'a/b/c');
+        is($path->get, '');
+
+        is(($path = path('a/b/c'))->pop('2+'), 'b/c');
+        is($path->get, 'a');
+
+        is(($path = path('a/b/c'))->pop('1+'), 'c');
+        is($path->get, 'a/b');
+
+        is(($path = path('a/b/c'))->pop('0+'), '');
+        is($path->get, 'a/b/c');
+
+        # greedy-*
+        is(($path = path('a/b/c'))->pop('4*'), 'a/b/c');
+        is($path->get, '');
+
+        is(($path = path('a/b/c'))->pop('3*'), 'a/b/c');
+        is($path->get, '');
+
+        is(($path = path('a/b/c'))->pop('2*'), 'b/c');
+        is($path->get, 'a');
+
+        is(($path = path('a/b/c'))->pop('1*'), 'c');
+        is($path->get, 'a/b');
+
+        is(($path = path('a/b/c'))->pop('0*'), '');
+        is($path->get, 'a/b/c');
+
+        # non-greedy /.
+        is(($path = path('/a/b/c'))->pop('4'), 'a/b/c');
+        is($path->get, '/');
+
+        is(($path = path('/a/b/c'))->pop('3'), 'a/b/c');
+        is($path->get, '/');
+
+        is(($path = path('/a/b/c'))->pop('2'), 'b/c');
+        is($path->get, '/a');
+
+        is(($path = path('/a/b/c'))->pop('1'), 'c');
+        is($path->get, '/a/b');
+
+        is(($path = path('/a/b/c'))->pop('0'), '');
+        is($path->get, '/a/b/c');
+
+        # greedy-+ /.
+        is(($path = path('/a/b/c'))->pop('4+'), '/a/b/c');
+        is($path->get, '');
+
+        is(($path = path('/a/b/c'))->pop('3+'), '/a/b/c');
+        is($path->get, '');
+
+        is(($path = path('/a/b/c'))->pop('2+'), 'b/c');
+        is($path->get, '/a');
+
+        is(($path = path('/a/b/c'))->pop('1+'), 'c');
+        is($path->get, '/a/b');
+
+        is(($path = path('/a/b/c'))->pop('0+'), '');
+        is($path->get, '/a/b/c');
+
+        # greedy-* /.
+        is(($path = path('/a/b/c'))->pop('4*'), '/a/b/c');
+        is($path->get, '');
+
+        is(($path = path('/a/b/c'))->pop('3*'), '/a/b/c');
+        is($path->get, '');
+
+        is(($path = path('/a/b/c'))->pop('2*'), 'b/c');
+        is($path->get, '/a');
+
+        is(($path = path('/a/b/c'))->pop('1*'), 'c');
+        is($path->get, '/a/b');
+
+        is(($path = path('/a/b/c'))->pop('0*'), '');
+        is($path->get, '/a/b/c');
+
+        # non-greedy /./
+        is(($path = path('/a/b/c/'))->pop('4'), 'a/b/c');
+        is($path->get, '/');
+
+        is(($path = path('/a/b/c/'))->pop('3'), 'a/b/c');
+        is($path->get, '/');
+
+        is(($path = path('/a/b/c/'))->pop('2'), 'b/c');
+        is($path->get, '/a');
+
+        is(($path = path('/a/b/c/'))->pop('1'), 'c');
+        is($path->get, '/a/b');
+
+        is(($path = path('/a/b/c/'))->pop('0'), '');
+        is($path->get, '/a/b/c/');
+
+        # greedy-+ /./
+        is(($path = path('/a/b/c/'))->pop('4+'), '/a/b/c');
+        is($path->get, '');
+
+        is(($path = path('/a/b/c/'))->pop('3+'), '/a/b/c');
+        is($path->get, '');
+
+        is(($path = path('/a/b/c/'))->pop('2+'), 'b/c');
+        is($path->get, '/a');
+
+        is(($path = path('/a/b/c/'))->pop('1+'), 'c');
+        is($path->get, '/a/b');
+
+        is(($path = path('/a/b/c/'))->pop('0+'), '');
+        is($path->get, '/a/b/c/');
+
+        # greedy-* /./
+        is(($path = path('/a/b/c/'))->pop('4*'), '/a/b/c/');
+        is($path->get, '');
+
+        is(($path = path('/a/b/c/'))->pop('3*'), '/a/b/c/');
+        is($path->get, '');
+
+        is(($path = path('/a/b/c/'))->pop('2*'), 'b/c/');
+        is($path->get, '/a');
+
+        is(($path = path('/a/b/c/'))->pop('1*'), 'c/');
+        is($path->get, '/a/b');
+
+        is(($path = path('/a/b/c/'))->pop('0*'), '');
+        is($path->get, '/a/b/c/');
+    }
 
     {
         my $path = path;
@@ -176,7 +479,7 @@ use Path::Abstract qw/path --no_0_093_warning/;
         $path->push("a", "b/c//");
         is("/a/a/b/c/", $path->get());
 
-        $path->push(path.'');
+        $path->push($path.'');
         is("/a/a/b/c/a/a/b/c/", $path->get());
 
         is("/a/a/b/c/a/a/b/c/", $path->get());
@@ -187,23 +490,23 @@ use Path::Abstract qw/path --no_0_093_warning/;
         is("", path.'');
 
         $path->down("a/b/c")->up();
-        is("a/b", path.'');
+        is("a/b", $path.'');
 
         $path->down("/h/i/j//")->up()->up()->up();
-        is("a/b", path.'');
+        is("a/b", $path.'');
 
         $path->down("/h/i/j//")->up(3);
-        is("a/b", path.'');
+        is("a/b", $path.'');
 
         $path->set("/");
         $path->up();
-        is("/", path.'');
+        is("/", $path.'');
 
         $path->down("a");
-        is("/a", path.'');
+        is("/a", $path.'');
 
         $path->down(1);
-        is("/a/1", path.'');
+        is("/a/1", $path.'');
     }
 
     {
