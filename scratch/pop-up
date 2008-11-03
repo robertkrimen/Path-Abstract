@@ -1,0 +1,47 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Test::More;
+use Regexp::Assemble;
+  
+my $ra;
+$ra = Regexp::Assemble->new;
+$ra->add('([^/+])');
+print $ra->re, "\n";
+exit;
+
+
+plan qw/no_plan/;
+
+#    '' => qr{(.)?([^/]+)/?$},
+#    '+' => qr{(.)?([^/]+)/?$},
+#    '*' => qr{(.)?([^/]+/?)$},
+
+my %re = (
+#    '' => qr{(?<=/|^)([^/]+)(?=/?)$},
+#    '$' => qr{([^/]+/?)$},
+);
+
+sub test($$$) {
+    my ($using, $on, $want) = @_;
+    my ($have) = $on =~ $re{$using};
+    is($have, $want, "using ($using) on $on => $want");
+}
+
+test '', '/a', 'a';
+test '', '/a/', 'a';
+test '', 'a/', 'a';
+
+test '', '/a/b/c', 'c';
+test '', '/a/b/c/', 'c';
+test '', 'a/b/c/', 'c';
+
+test '$', '/a', 'a';
+test '$', '/a/', 'a/';
+test '$', 'a/', 'a/';
+
+test '$', '/a/b/c', 'c';
+test '$', '/a/b/c/', 'c/';
+test '$', 'a/b/c/', 'c/';

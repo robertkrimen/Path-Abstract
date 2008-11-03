@@ -1,0 +1,11 @@
+#!/usr/bin/perl -w
+
+use strict;
+use warnings;
+
+use JSON;
+my $json = JSON->new->pretty;
+
+my @list;
+@list = split m/(?<!^)\//, '/a/b/c/';
+print $json->encode(\@list), "\n";
