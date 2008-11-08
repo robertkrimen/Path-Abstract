@@ -636,7 +636,7 @@ use Path::Abstract qw/path --no_0_093_warning/;
         ok($path->is_empty());
         ok(!$path->is_root());
         ok(!$path->is_tree());
-        ok(!$path->is_branch());
+        ok($path->is_branch());
         cmp_deeply([], [ $path->list ]);
 
         $path = path("/");

@@ -90,7 +90,7 @@ The old behavior:
 
     1. Would return undef for the empty path
     2. Would include the leading slash (if present)
-    2. Would NOT include the trailing slash (if present)
+    3. Would NOT include the trailing slash (if present)
     
     path(undef)->first  # undef
     path('')->first     # undef
@@ -119,7 +119,7 @@ The old behavior:
     
     1. Would return undef for the empty path
     2. Would include the leading slash (if present)
-    2. Would NOT include the trailing slash (if present)
+    3. Would NOT include the trailing slash (if present)
     
     path(undef)->last  # undef
     path('')->last     # undef
@@ -144,7 +144,15 @@ The new behavior:
 
 For an alternative to ->last, try ->ending
 
-# TODO ->branch?
+=item $path->is_branch
+
+The old behavior:
+    
+    1. The empty patch ('') would not be considered a branch
+    
+The new behavior:
+    
+    1. The empty patch ('') IS considered a branch
 
 =back
 
@@ -275,6 +283,8 @@ sub is_tree {
 
 Returns true if $path does NOT begin with a "/"
 
+	path("")->is_branch # Returns true
+	path("/")->is_branch # Returns false
 	path("c/d")->is_branch # Returns true
 	path("/a/b")->is_branch # Returns false
 
@@ -282,7 +292,9 @@ Returns true if $path does NOT begin with a "/"
 
 sub is_branch {
 	my $self = shift;
-	return $$self && substr($$self, 0, 1) ne "/";
+    Path::Abstract->_0_093_warn if $Path::Abstract::_0_093_warn;
+#    return $$self && substr($$self, 0, 1) ne "/";
+    return ! $$self || substr($$self, 0, 1) ne "/";
 }
 
 =head2 $path->to_tree

@@ -112,16 +112,16 @@ $template->test([
 # }}}
 # is_branch {{{
 $template->test([
-	[ "%?->is_branch" => is => "" ],
-	[ "%?->is_branch" => is => "" ],
 	[ "%?->is_branch" => is => "1" ],
 	[ "%?->is_branch" => is => "" ],
 	[ "%?->is_branch" => is => "1" ],
 	[ "%?->is_branch" => is => "" ],
 	[ "%?->is_branch" => is => "1" ],
 	[ "%?->is_branch" => is => "" ],
+	[ "%?->is_branch" => is => "1" ],
 	[ "%?->is_branch" => is => "" ],
-	[ "%?->is_branch" => is => "" ],
+	[ "%?->is_branch" => is => "1" ],
+	[ "%?->is_branch" => is => "1" ],
 	[ "%?->is_branch" => is => "1" ],
 ]);
 # }}}
