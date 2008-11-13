@@ -7,9 +7,15 @@ use strict;
 
 Path::Abstract - Fast and featureful UNIX-style path manipulation
 
+=cut
+
+use vars qw/$VERSION $_0_093_warn %_0_093_warning/;
+
+$VERSION = '0.094_2';
+
 =head1 VERSION
 
-Version 0.094_1
+Version 0.094_2
 
 =head1 SYNOPSIS
 
@@ -65,10 +71,6 @@ Path::Abstract is a tool for parsing, interrogating, and modifying a UNIX-style 
 is similar to L<File::Spec::Unix>, except that trailing slashes are preserved (converted into a single slash).
 
 =cut
-
-use vars qw/$VERSION $_0_093_warn %_0_093_warning/;
-
-$VERSION = '0.094_1';
 
 $_0_093_warn = 1;
 
