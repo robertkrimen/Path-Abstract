@@ -15,16 +15,56 @@ Version 0.094_1
 
   use Path::Abstract;
 
-  my $path = Path::Abstract->new( "/apple/banana" )
+  my $path = Path::Abstract->new( '/apple/banana' )
 
-  # $parent is "/apple"
+  # $parent is '/apple'
   my $parent = $path->parent
 
-  # $cherry is "/apple/banana/cherry.txt"
+  # $cherry is '/apple/banana/cherry.txt'
   my $cherry = $path->child( "cherry.txt" )
 
-=cut
+  path( '/a/b/c/' )->list                   # ( 'a', 'b', 'c' )
+  path( '/a/b/c/' )->split                  # ( '/a', 'b', 'c/' )
 
+  path( '/a/b/c/' )->first                  # a
+  path( '/a/b/c/' )->beginning              # /a
+
+  path( '/a/b/c/' )->last                   # c
+  path( '/a/b/c/' )->ending                 # c/
+
+  path( '/a/b/c/' ).at(0)                   # a (equivalent to ->first)
+  path( '/a/b/c/' ).at(-1)                  # c (equivalent to ->last)
+  path( '/a/b/c/' ).at(1)                   # b
+
+  $path = path( 'a/b/c' )
+  $path->append( 'd', 'ef/g', 'h' )         # a/b/cd/ef/g/h
+
+  path( 'a/b/c.html' )->extension           # .html
+  path( 'a/b/c' )->extension                # ''
+  path( 'a/b/c.tar.gz' )->extension         # .gz
+  path( 'a/b/c.tar.gz' )->
+    extension({ match: '*' })               # .tar.gz
+
+  path( 'a/b/c.html' )->extension( '.txt' ) # a/b/c.txt
+  path( 'a/b/c.html' )->extension( 'zip' )  # a/b/c.zip
+  path( 'a/b/c.html' )->extension( '' )     # a/b/c
+
+  path( 'a/b/c' )->down( 'd/e' )            # a/b/c/d/e
+  path( 'a/b/c' )->child( 'd/e' )           # a/b/c/d/e (Same as ->down except
+                                            # returning a new path instead of
+                                            # modifying the original)
+  
+  path( 'a/b/c' )->up                       # a/b
+  path( 'a/b/c' )->parent                   # a/b (Same as ->up except
+                                            # returning a new path instead of
+                                            # modifying the original)
+
+=head1 DESCRIPTION
+
+Path::Abstract is a tool for parsing, interrogating, and modifying a UNIX-style path. The parsing behavior
+is similar to L<File::Spec::Unix>, except that trailing slashes are preserved (converted into a single slash).
+
+=cut
 
 use vars qw/$VERSION $_0_093_warn %_0_093_warning/;
 
@@ -77,9 +117,7 @@ Unfortunately, this MAY result in code that worked with 0.093 and earlier be upd
 
 The following has changed:
 
-=over
-
-=item $path->list
+=head2 $path->list
 
 The old behavior (kept the leading slash but dropped trailing slash):
 
@@ -98,11 +136,11 @@ WILL keep BOTH leading and trailing slashes (if any):
     path('a/b/c/')->split     # ( 'a', 'b', 'c/' )
     path('a/b/c')->split      # ( 'a', 'b', 'c' ) Effectively equivalent to ->list
 
-=item $path->split
+=head2 $path->split
 
 See the above note on $path->list
 
-=item $path->first
+=head2 $path->first
 
 The old behavior:
 
@@ -129,7 +167,7 @@ The new behavior:
 
 For an alternative to ->first, try ->beginning
 
-=item $path->last
+=head2 $path->last
 
 Simlar to ->first
 
@@ -162,7 +200,7 @@ The new behavior:
 
 For an alternative to ->last, try ->ending
 
-=item $path->is_branch
+=head2 $path->is_branch
 
 The old behavior:
     
@@ -175,8 +213,6 @@ The new behavior:
 =back
 
 =head1 METHODS
-
-=cut
 
 =head2 Path::Abstract->new( <path> )
 
@@ -349,6 +385,8 @@ Modify $path by appending each <part> to the end of \$path, separated by "/"
 
 Returns $path
 
+    path( "a/b/c" )->down( "d/e" ) # a/b/c/d/e
+
 =cut
 
 =head2 $path->child( <part>, [ <part>, ..., <part> ] )
@@ -356,6 +394,8 @@ Returns $path
 Make a copy of $path and push each <part> to the end of the new path.
 
 Returns the new child path
+
+    path( "a/b/c" )->child( "d/e" ) # a/b/c/d/e
 
 =cut
 
@@ -375,18 +415,18 @@ Returns the extension of path, including the leading the dot
 
 Returns "" if path does not have an extension
 
-      path( "a/b/c.html" )->extension // .html
-      path( "a/b/c" )->extension // ""
-      path( "a/b/c.tar.gz" )->extension // .gz
-      path( "a/b/c.tar.gz" )->extension({ match: "*" }) // .tar.gz
+      path( "a/b/c.html" )->extension                   # .html
+      path( "a/b/c" )->extension                        # ""
+      path( "a/b/c.tar.gz" )->extension                 # .gz
+      path( "a/b/c.tar.gz" )->extension({ match: "*" }) # .tar.gz
 
 =head2 $path->extension( $extension )
 
 Modify path by changing the existing extension of path, if any, to $extension
 
-      path( "a/b/c.html" )->extension( ".txt" ) // a/b/c.txt
-      path( "a/b/c.html" )->extension( "zip" ) // a/b/c.zip
-      path( "a/b/c.html" )->extension( "" ) // a/b/c
+      path( "a/b/c.html" )->extension( ".txt" ) # a/b/c.txt
+      path( "a/b/c.html" )->extension( "zip" )  # a/b/c.zip
+      path( "a/b/c.html" )->extension( "" )     # a/b/c
 
 Returns path
 
@@ -440,11 +480,15 @@ Returns the new dir object
 
 L<Path::Class>
 
+L<File::Spec::Unix>
+
 L<File::Spec>
 
 L<Path::Resource>
 
 L<Path::Abstract::Underload>
+
+L<URI::PathAbstract>
 
 =head1 AUTHOR
 
