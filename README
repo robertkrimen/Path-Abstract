@@ -1,8 +1,9 @@
 NAME
-    Path::Abstract - Fast and featureful UNIX-style path manipulation
+    Path::Abstract - Fast and featureful UNIX-style path parsing and
+    manipulation
 
 VERSION
-    Version 0.094_2
+    Version 0.095
 
 SYNOPSIS
       use Path::Abstract;

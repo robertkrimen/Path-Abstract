@@ -4,7 +4,10 @@ TODO:
     - Make ->list more like Path::Class::Dir::list
     - Document differences between Path::Abstract and Path::Class
     
-0.094_2 Wednesday November 12 17:37:11 PST 2008 
+0.095 Friday November 14 13:38:16 PST 2008:
+    - Documentation tweak and release
+
+0.094_2 Wednesday November 12 17:37:11 PST 2008:
     - Moved documentation out of ::Underload
     - Added some documentation
 

@@ -51,7 +51,7 @@ You'll have to do this instead:
 
 Or, just use L<Path::Abstract>
 
-=head1 Documentation & usage
+=head1 DOCUMENTATION
 
 See L<Path::Abstract> for documentation & usage
 

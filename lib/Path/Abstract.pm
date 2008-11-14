@@ -5,17 +5,17 @@ use strict;
 
 =head1 NAME
 
-Path::Abstract - Fast and featureful UNIX-style path manipulation
+Path::Abstract - Fast and featureful UNIX-style path parsing and manipulation
 
 =cut
 
 use vars qw/$VERSION $_0_093_warn %_0_093_warning/;
 
-$VERSION = '0.094_2';
+$VERSION = '0.095';
 
 =head1 VERSION
 
-Version 0.094_2
+Version 0.095
 
 =head1 SYNOPSIS
 
