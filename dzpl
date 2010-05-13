@@ -1,0 +1,25 @@
+#!/usr/bin/env perl
+use Dzpl
+    name => 'Path-Abstract',
+    version => '0.096',
+    author => 'Robert Krimen <robertkrimen@gmail.com>',
+    license => 'Perl5',
+    copyright => 'Robert Krimen',
+
+    require => q/
+        Scalar::Util
+        Sub::Exporter
+        Carp
+
+        [Test]
+        Test::More
+        Test::Most
+        Test::Lazy
+    /,
+
+    recommend => q/
+        Path::Class
+    /,
+;
+
+{ plugin '@ROKR' }

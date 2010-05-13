@@ -1,21 +1,10 @@
 package Path::Abstract;
+# ABSTRACT: Fast and featureful UNIX-style path parsing and manipulation
 
 use warnings;
 use strict;
 
-=head1 NAME
-
-Path::Abstract - Fast and featureful UNIX-style path parsing and manipulation
-
-=cut
-
-use vars qw/$VERSION $_0_093_warn %_0_093_warning/;
-
-$VERSION = '0.095';
-
-=head1 VERSION
-
-Version 0.095
+use vars qw/$_0_093_warn %_0_093_warning/;
 
 =head1 SYNOPSIS
 
@@ -214,7 +203,7 @@ The new behavior:
 
 =back
 
-=head1 METHODS
+=head1 USAGE
 
 =head2 Path::Abstract->new( <path> )
 
@@ -492,65 +481,10 @@ L<Path::Abstract::Underload>
 
 L<URI::PathAbstract>
 
-=head1 AUTHOR
-
-Robert Krimen, C<< <rkrimen at cpan.org> >>
-
-=head1 SOURCE
-
-You can contribute or fork this project via GitHub:
-
-L<http://github.com/robertkrimen/path-abstract/tree/master>
-
-    git clone git://github.com/robertkrimen/path-abstract.git Path-Abstract
-
-=head1 BUGS
-
-Please report any bugs or feature requests to
-C<bug-path-lite at rt.cpan.org>, or through the web interface at
-L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Path-Abstract>.
-I will be notified, and then you'll automatically be notified of progress on
-your bug as I make changes.
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc Path::Abstract
-
-You can also look for information at:
-
-=over 4
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/Path-Abstract>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Path-Abstract>
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Path-Abstract>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/Path-Abstract>
-
-=back
-
 =head1 ACKNOWLEDGEMENTS
 
 Thanks to Joshua ben Jore, Max Kanat-Alexander, and Scott McWhirter for discovering the "use overload ..." slowdown issue.
 
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2007 Robert Krimen, all rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
 =cut
 
-1; # End of Path::Abstract
+1;

@@ -4,6 +4,9 @@ TODO:
     - Make ->list more like Path::Class::Dir::list
     - Document differences between Path::Abstract and Path::Class
     
+0.096 Thursday May 13 13:35:10 PDT 2010:
+    - Conversion to Dist::Dzpl
+    
 0.095 Friday November 14 13:38:16 PST 2008:
     - Documentation tweak and release
 

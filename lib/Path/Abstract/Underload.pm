@@ -1,11 +1,8 @@
 package Path::Abstract::Underload;
+# ABSTRACT: Path::Abstract without stringification overloading
 
 use warnings;
 use strict;
-
-=head1 NAME
-
-Path::Abstract::Underload - Path::Abstract without stringification overloading
 
 =head1 SYNOPSIS
 
